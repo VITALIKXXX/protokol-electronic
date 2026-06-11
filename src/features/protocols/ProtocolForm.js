@@ -25,6 +25,8 @@ const emptyProduct = {
     dosage: "",
 };
 
+const getToday = () => new Date().toISOString().slice(0, 10);
+
 export const ProtocolForm = () => {
     const [products, setProducts] = useState([{ ...emptyProduct }]);
 
@@ -87,7 +89,7 @@ export const ProtocolForm = () => {
                 <Grid>
                     <Field>
                         <Label>📅 Data wykonania</Label>
-                        <Input type="date" />
+                        <Input type="date" defaultValue={getToday()} />
                     </Field>
 
                     <Field>
