@@ -122,3 +122,30 @@ export const Button = styled.button`
     background: #1d4ed8;
   }
 `;
+
+export const ProductBlock = styled.div`
+  padding: 14px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+`;
+
+export const SecondaryButton = styled.button`
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #e5e7eb;
+  padding: 11px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 10px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+`;
+
+export const ButtonsRow = styled.div`
+  margin-top: 18px;
+`;

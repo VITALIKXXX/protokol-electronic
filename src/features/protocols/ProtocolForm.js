@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     Card,
     Section,
@@ -9,10 +10,32 @@ import {
     Textarea,
     CheckboxGrid,
     CheckboxLabel,
+    ProductBlock,
     Button,
+    SecondaryButton,
+    ButtonsRow,
 } from "./ProtocolForm.styles";
 
+const emptyProduct = {
+    documentNumber: "",
+    name: "",
+    batch: "",
+    expiryDate: "",
+    quantity: "",
+    dosage: "",
+};
+
 export const ProtocolForm = () => {
+    const [products, setProducts] = useState([{ ...emptyProduct }]);
+
+    const addProduct = () => {
+        setProducts((prev) => [...prev, { ...emptyProduct }]);
+    };
+
+    const removeProduct = (indexToRemove) => {
+        setProducts((prev) => prev.filter((_, index) => index !== indexToRemove));
+    };
+
     return (
         <Card>
             <Section>
@@ -45,45 +68,16 @@ export const ProtocolForm = () => {
                 <SectionTitle>Rodzaj zabiegu</SectionTitle>
 
                 <CheckboxGrid>
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Szczepienie IM
-                    </CheckboxLabel>
-
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Szczepienie SC
-                    </CheckboxLabel>
-
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Błona skrzydłowa
-                    </CheckboxLabel>
-
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Kropla do oka
-                    </CheckboxLabel>
-
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Spray
-                    </CheckboxLabel>
-
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Deratyzacja
-                    </CheckboxLabel>
-
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Dezynfekcja
-                    </CheckboxLabel>
-
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Dezynsekcja
-                    </CheckboxLabel>
-
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Czyszczenie linii pojenia
-                    </CheckboxLabel>
-
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Inne
-                    </CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Szczepienie IM</CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Szczepienie SC</CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Błona skrzydłowa</CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Kropla do oka</CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Spray</CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Deratyzacja</CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Dezynfekcja</CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Dezynsekcja</CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Czyszczenie linii pojenia</CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Inne</CheckboxLabel>
                 </CheckboxGrid>
             </Section>
 
@@ -150,39 +144,55 @@ export const ProtocolForm = () => {
             </Section>
 
             <Section>
-                <SectionTitle>Preparat / szczepionka</SectionTitle>
+                <SectionTitle>Preparaty / szczepionki</SectionTitle>
 
-                <Grid>
-                    <Field>
-                        <Label>Nr dokumentu wydania</Label>
-                        <Input placeholder="np. WZ/123/2026" />
-                    </Field>
+                {products.map((product, index) => (
+                    <ProductBlock key={index}>
+                        <SectionTitle>Preparat {index + 1}</SectionTitle>
 
-                    <Field>
-                        <Label>Nazwa / opakowanie</Label>
-                        <Input placeholder="np. nazwa preparatu" />
-                    </Field>
+                        <Grid>
+                            <Field>
+                                <Label>Nr dokumentu wydania</Label>
+                                <Input placeholder="np. WZ/123/2026" />
+                            </Field>
 
-                    <Field>
-                        <Label>Seria</Label>
-                        <Input placeholder="np. AB1234" />
-                    </Field>
+                            <Field>
+                                <Label>Nazwa / opakowanie</Label>
+                                <Input placeholder="np. Nobilis IB" />
+                            </Field>
 
-                    <Field>
-                        <Label>📅 Data ważności</Label>
-                        <Input type="date" />
-                    </Field>
+                            <Field>
+                                <Label>Seria</Label>
+                                <Input placeholder="np. AB1234" />
+                            </Field>
 
-                    <Field>
-                        <Label>Ilość</Label>
-                        <Input placeholder="np. 10 op." />
-                    </Field>
+                            <Field>
+                                <Label>📅 Data ważności</Label>
+                                <Input type="date" />
+                            </Field>
 
-                    <Field>
-                        <Label>Dawkowanie / metoda zastosowania</Label>
-                        <Input placeholder="np. w wodzie do picia" />
-                    </Field>
-                </Grid>
+                            <Field>
+                                <Label>Ilość</Label>
+                                <Input placeholder="np. 10 op." />
+                            </Field>
+
+                            <Field>
+                                <Label>Dawkowanie / metoda zastosowania</Label>
+                                <Input placeholder="np. w wodzie do picia" />
+                            </Field>
+                        </Grid>
+
+                        {products.length > 1 && (
+                            <SecondaryButton type="button" onClick={() => removeProduct(index)}>
+                                Usuń preparat
+                            </SecondaryButton>
+                        )}
+                    </ProductBlock>
+                ))}
+
+                <SecondaryButton type="button" onClick={addProduct}>
+                    + Dodaj preparat
+                </SecondaryButton>
             </Section>
 
             <Section>
@@ -196,21 +206,10 @@ export const ProtocolForm = () => {
                 </Grid>
 
                 <CheckboxGrid>
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Sprzęt sterylny
-                    </CheckboxLabel>
-
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Odzież ochronna
-                    </CheckboxLabel>
-
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Odpady zabezpieczone
-                    </CheckboxLabel>
-
-                    <CheckboxLabel>
-                        <input type="checkbox" /> Kombinezony spakowane
-                    </CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Sprzęt sterylny</CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Odzież ochronna</CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Odpady zabezpieczone</CheckboxLabel>
+                    <CheckboxLabel><input type="checkbox" /> Kombinezony spakowane</CheckboxLabel>
                 </CheckboxGrid>
 
                 <Field>
@@ -240,7 +239,9 @@ export const ProtocolForm = () => {
                 </Grid>
             </Section>
 
-            <Button type="button">Zapisz protokół</Button>
+            <ButtonsRow>
+                <Button type="button">Zapisz protokół</Button>
+            </ButtonsRow>
         </Card>
     );
 };
