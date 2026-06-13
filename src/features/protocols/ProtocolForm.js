@@ -30,12 +30,47 @@ const getToday = () => new Date().toISOString().slice(0, 10);
 export const ProtocolForm = () => {
     const [products, setProducts] = useState([{ ...emptyProduct }]);
 
+    const [formData, setFormData] = useState({
+        protocolNumber: "",
+        orderDate: getToday(),
+        orderTime: "",
+        orderingPerson: "",
+        executionDate: getToday(),
+        startTime: "",
+        endTime: "",
+        breeder: "",
+        city: "",
+        building: "",
+        animalAge: "",
+        animalType: "",
+        animalCount: "",
+        notes: "",
+        dateChangeReason: "",
+        transportTemperature: "",
+        supervisor: "",
+        authorizedPerson: "",
+        workers: "",
+    });
+
+    const updateField = (field) => (event) => {
+        setFormData((prev) => ({
+            ...prev,
+            [field]: event.target.value,
+        }));
+    };
+
     const addProduct = () => {
         setProducts((prev) => [...prev, { ...emptyProduct }]);
     };
 
     const removeProduct = (indexToRemove) => {
         setProducts((prev) => prev.filter((_, index) => index !== indexToRemove));
+    };
+
+    const handleSave = () => {
+        console.log("Dane protokołu:", formData);
+        console.log("Preparaty:", products);
+        alert("Protokół zapisany testowo — sprawdź konsolę");
     };
 
     return (
@@ -46,22 +81,38 @@ export const ProtocolForm = () => {
                 <Grid>
                     <Field>
                         <Label>Numer protokołu</Label>
-                        <Input placeholder="np. 001/2026" />
+                        <Input
+                            value={formData.protocolNumber}
+                            onChange={updateField("protocolNumber")}
+                            placeholder="np. 001/2026"
+                        />
                     </Field>
 
                     <Field>
                         <Label>📅 Data przyjęcia zlecenia</Label>
-                        <Input type="date" />
+                        <Input
+                            type="date"
+                            value={formData.orderDate}
+                            onChange={updateField("orderDate")}
+                        />
                     </Field>
 
                     <Field>
                         <Label>🕒 Godzina przyjęcia</Label>
-                        <Input type="time" />
+                        <Input
+                            type="time"
+                            value={formData.orderTime}
+                            onChange={updateField("orderTime")}
+                        />
                     </Field>
 
                     <Field>
                         <Label>Osoba zlecająca</Label>
-                        <Input placeholder="np. Jan Kowalski" />
+                        <Input
+                            value={formData.orderingPerson}
+                            onChange={updateField("orderingPerson")}
+                            placeholder="np. Jan Kowalski"
+                        />
                     </Field>
                 </Grid>
             </Section>
@@ -89,22 +140,38 @@ export const ProtocolForm = () => {
                 <Grid>
                     <Field>
                         <Label>📅 Data wykonania</Label>
-                        <Input type="date" defaultValue={getToday()} />
+                        <Input
+                            type="date"
+                            value={formData.executionDate}
+                            onChange={updateField("executionDate")}
+                        />
                     </Field>
 
                     <Field>
                         <Label>🕒 Godzina od</Label>
-                        <Input type="time" />
+                        <Input
+                            type="time"
+                            value={formData.startTime}
+                            onChange={updateField("startTime")}
+                        />
                     </Field>
 
                     <Field>
                         <Label>🕒 Godzina do</Label>
-                        <Input type="time" />
+                        <Input
+                            type="time"
+                            value={formData.endTime}
+                            onChange={updateField("endTime")}
+                        />
                     </Field>
 
                     <Field>
                         <Label>Przyczyna zmiany daty</Label>
-                        <Input placeholder="opcjonalnie" />
+                        <Input
+                            value={formData.dateChangeReason}
+                            onChange={updateField("dateChangeReason")}
+                            placeholder="opcjonalnie"
+                        />
                     </Field>
                 </Grid>
             </Section>
@@ -115,7 +182,11 @@ export const ProtocolForm = () => {
                 <Grid>
                     <Field>
                         <Label>Właściciel / ferma</Label>
-                        <Input placeholder="np. Specjalistyczne Gospodarstwo Rolne..." />
+                        <Input
+                            value={formData.breeder}
+                            onChange={updateField("breeder")}
+                            placeholder="np. Specjalistyczne Gospodarstwo Rolne..."
+                        />
                     </Field>
 
                     <Field>
@@ -216,7 +287,12 @@ export const ProtocolForm = () => {
 
                 <Field>
                     <Label>Uwagi</Label>
-                    <Textarea rows={4} placeholder="Dodatkowe informacje..." />
+                    <Textarea
+                        rows={4}
+                        value={formData.notes}
+                        onChange={updateField("notes")}
+                        placeholder="Dodatkowe informacje..."
+                    />
                 </Field>
             </Section>
 
@@ -226,23 +302,37 @@ export const ProtocolForm = () => {
                 <Grid>
                     <Field>
                         <Label>Osoba nadzorująca</Label>
-                        <Input placeholder="imię i nazwisko" />
+                        <Input
+                            value={formData.supervisor}
+                            onChange={updateField("supervisor")}
+                            placeholder="imię i nazwisko"
+                        />
                     </Field>
 
                     <Field>
                         <Label>Hodowca / osoba upoważniona</Label>
-                        <Input placeholder="imię i nazwisko" />
+                        <Input
+                            value={formData.authorizedPerson}
+                            onChange={updateField("authorizedPerson")}
+                            placeholder="imię i nazwisko"
+                        />
                     </Field>
 
                     <Field>
                         <Label>Osoby wykonujące zabieg</Label>
-                        <Input placeholder="np. Vitalii, Tomek, Kasia" />
+                        <Input
+                            value={formData.workers}
+                            onChange={updateField("workers")}
+                            placeholder="np. Vitalii, Tomek, Kasia"
+                        />
                     </Field>
                 </Grid>
             </Section>
 
             <ButtonsRow>
-                <Button type="button">Zapisz protokół</Button>
+                <Button type="button" onClick={handleSave}>
+                    Zapisz protokół
+                </Button>
             </ButtonsRow>
         </Card>
     );
