@@ -52,6 +52,9 @@ export const ProtocolForm = () => {
         workers: "",
     });
 
+    const [savedProtocol, setSavedProtocol] = useState(null);
+
+
     const updateField = (field) => (event) => {
         setFormData((prev) => ({
             ...prev,
@@ -68,9 +71,14 @@ export const ProtocolForm = () => {
     };
 
     const handleSave = () => {
-        console.log("Dane protokołu:", formData);
-        console.log("Preparaty:", products);
-        alert("Protokół zapisany testowo — sprawdź konsolę");
+        const protocol = {
+            ...formData,
+            products,
+        };
+
+        console.log(protocol);
+
+        setSavedProtocol(protocol);
     };
 
     return (
@@ -334,6 +342,26 @@ export const ProtocolForm = () => {
                     Zapisz protokół
                 </Button>
             </ButtonsRow>
+
+            {savedProtocol && (
+                <Section>
+                    <SectionTitle>Ostatnio zapisany protokół</SectionTitle>
+
+                    <p>
+                        <strong>Numer:</strong> {savedProtocol.protocolNumber || "-"}
+                    </p>
+
+                    <p>
+                        <strong>Osoba zlecająca:</strong>{" "}
+                        {savedProtocol.orderingPerson || "-"}
+                    </p>
+
+                    <p>
+                        <strong>Data przyjęcia:</strong>{" "}
+                        {savedProtocol.orderDate || "-"}
+                    </p>
+                </Section>
+            )}
         </Card>
     );
 };
