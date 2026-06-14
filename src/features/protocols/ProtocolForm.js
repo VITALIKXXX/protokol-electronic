@@ -50,6 +50,13 @@ export const ProtocolForm = () => {
         supervisor: "",
         authorizedPerson: "",
         workers: "",
+        treatments: [],
+        bhp: {
+            sterileEquipment: false,
+            protectiveClothing: false,
+            wasteSecured: false,
+            dirtyClothesPacked: false,
+        },
     });
 
     const [savedProtocol, setSavedProtocol] = useState(null);
@@ -59,6 +66,29 @@ export const ProtocolForm = () => {
         setFormData((prev) => ({
             ...prev,
             [field]: event.target.value,
+        }));
+    };
+
+    const toggleTreatment = (treatment) => (event) => {
+        setFormData((prev) => {
+            const checked = event.target.checked;
+
+            return {
+                ...prev,
+                treatments: checked
+                    ? [...prev.treatments, treatment]
+                    : prev.treatments.filter((item) => item !== treatment),
+            };
+        });
+    };
+
+    const toggleBhp = (field) => (event) => {
+        setFormData((prev) => ({
+            ...prev,
+            bhp: {
+                ...prev.bhp,
+                [field]: event.target.checked,
+            },
         }));
     };
 
@@ -142,16 +172,86 @@ export const ProtocolForm = () => {
                 <SectionTitle>Rodzaj zabiegu</SectionTitle>
 
                 <CheckboxGrid>
-                    <CheckboxLabel><input type="checkbox" /> Szczepienie IM</CheckboxLabel>
-                    <CheckboxLabel><input type="checkbox" /> Szczepienie SC</CheckboxLabel>
-                    <CheckboxLabel><input type="checkbox" /> Błona skrzydłowa</CheckboxLabel>
-                    <CheckboxLabel><input type="checkbox" /> Kropla do oka</CheckboxLabel>
-                    <CheckboxLabel><input type="checkbox" /> Spray</CheckboxLabel>
-                    <CheckboxLabel><input type="checkbox" /> Deratyzacja</CheckboxLabel>
-                    <CheckboxLabel><input type="checkbox" /> Dezynfekcja</CheckboxLabel>
-                    <CheckboxLabel><input type="checkbox" /> Dezynsekcja</CheckboxLabel>
-                    <CheckboxLabel><input type="checkbox" /> Czyszczenie linii pojenia</CheckboxLabel>
-                    <CheckboxLabel><input type="checkbox" /> Inne</CheckboxLabel>
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.treatments.includes("Szczepienie IM")}
+                            onChange={toggleTreatment("Szczepienie IM")}
+                        />
+                        Szczepienie IM
+                    </CheckboxLabel>
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.treatments.includes("Szczepienie SC")}
+                            onChange={toggleTreatment("Szczepienie SC")}
+                        />
+                        Szczepienie SC
+                    </CheckboxLabel>
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.treatments.includes("Błona skrzydłowa")}
+                            onChange={toggleTreatment("Błona skrzydłowa")}
+                        />
+                        Błona skrzydłowa
+                    </CheckboxLabel>
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.treatments.includes("Kropla do oka")}
+                            onChange={toggleTreatment("Kropla do oka")}
+                        />
+                        Kropla do oka
+                    </CheckboxLabel>
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.treatments.includes("Spray")}
+                            onChange={toggleTreatment("Spray")}
+                        />
+                        Spray
+                    </CheckboxLabel>
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.treatments.includes(" Deratyzacja")}
+                            onChange={toggleTreatment(" Deratyzacja")}
+                        />
+                        Deratyzacja
+                    </CheckboxLabel>
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.treatments.includes(" Dezynfekcja")}
+                            onChange={toggleTreatment(" Dezynfekcja")}
+                        />
+                        Dezynfekcja
+                    </CheckboxLabel>
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.treatments.includes(" Dezynsekcja")}
+                            onChange={toggleTreatment(" Dezynsekcja")}
+                        />
+                        Dezynsekcja
+                    </CheckboxLabel>
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.treatments.includes("Czyszczenie linii pojenia")}
+                            onChange={toggleTreatment("Czyszczenie linii pojenia")}
+                        />
+                        Czyszczenie linii pojenia
+                    </CheckboxLabel>
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.treatments.includes("Inne")}
+                            onChange={toggleTreatment("Inne")}
+                        />
+                        Inne
+                    </CheckboxLabel>
                 </CheckboxGrid>
             </Section>
 
@@ -324,10 +424,40 @@ export const ProtocolForm = () => {
                 </Grid>
 
                 <CheckboxGrid>
-                    <CheckboxLabel><input type="checkbox" /> Sprzęt sterylny</CheckboxLabel>
-                    <CheckboxLabel><input type="checkbox" /> Odzież ochronna</CheckboxLabel>
-                    <CheckboxLabel><input type="checkbox" /> Odpady zabezpieczone</CheckboxLabel>
-                    <CheckboxLabel><input type="checkbox" /> Kombinezony spakowane</CheckboxLabel>
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.bhp.sterileEquipment}
+                            onChange={toggleBhp("sterileEquipment")}
+                        />
+                        Sprzęt sterylny
+                    </CheckboxLabel>
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.bhp.protectiveClothing}
+                            onChange={toggleBhp("protectiveClothing")}
+                        />
+                        Odzież ochronna
+                    </CheckboxLabel>
+
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.bhp.wasteSecured}
+                            onChange={toggleBhp("wasteSecured")}
+                        />
+                        Odpady zabezpieczone
+                    </CheckboxLabel>
+
+                    <CheckboxLabel>
+                        <input
+                            type="checkbox"
+                            checked={formData.bhp.dirtyClothesPacked}
+                            onChange={toggleBhp("dirtyClothesPacked")}
+                        />
+                        Kombinezony spakowane
+                    </CheckboxLabel>
                 </CheckboxGrid>
 
                 <Field>
