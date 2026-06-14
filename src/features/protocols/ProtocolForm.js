@@ -70,6 +70,19 @@ export const ProtocolForm = () => {
         setProducts((prev) => prev.filter((_, index) => index !== indexToRemove));
     };
 
+    const updateProduct = (index, field) => (event) => {
+        setProducts((prev) =>
+            prev.map((product, productIndex) =>
+                productIndex === index
+                    ? {
+                        ...product,
+                        [field]: event.target.value,
+                    }
+                    : product
+            )
+        );
+    };
+
     const handleSave = () => {
         const protocol = {
             ...formData,
@@ -234,32 +247,56 @@ export const ProtocolForm = () => {
                         <Grid>
                             <Field>
                                 <Label>Nr dokumentu wydania</Label>
-                                <Input placeholder="np. WZ/123/2026" />
+                                <Input
+                                    value={product.documentNumber}
+                                    onChange={updateProduct(index, "documentNumber")}
+                                    placeholder="np. WZ/123/2026"
+                                />
                             </Field>
 
                             <Field>
                                 <Label>Nazwa / opakowanie</Label>
-                                <Input placeholder="np. Nobilis IB" />
+                                <Input
+                                    value={product.name}
+                                    onChange={updateProduct(index, "name")}
+                                    placeholder="np. Nobilis IB"
+                                />
                             </Field>
 
                             <Field>
                                 <Label>Seria</Label>
-                                <Input placeholder="np. AB1234" />
+                                <Input
+                                    value={product.batch}
+                                    onChange={updateProduct(index, "batch")}
+                                    placeholder="np. AB1234"
+                                />
                             </Field>
 
                             <Field>
                                 <Label>📅 Data ważności</Label>
-                                <Input type="date" />
+                                <Input
+                                    type="date"
+                                    value={product.expiryDate}
+                                    onChange={updateProduct(index, "expiryDate")}
+                                />
                             </Field>
 
                             <Field>
                                 <Label>Ilość</Label>
-                                <Input placeholder="np. 10 op." />
+                                <Input
+                                    value={product.quantity}
+                                    onChange={updateProduct(index, "quantity")}
+                                    placeholder="np. 10 op."
+                                />
                             </Field>
 
                             <Field>
                                 <Label>Dawkowanie / metoda zastosowania</Label>
-                                <Input placeholder="np. w wodzie do picia" />
+                                <Input
+                                    value={product.dosage}
+                                    onChange={updateProduct(index, "dosage")}
+                                    placeholder="np. w wodzie do picia"
+                                />
                             </Field>
                         </Grid>
 
