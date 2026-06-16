@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createProtocol } from "./protocolsApi";
 import {
     Card,
     Section,
@@ -113,15 +114,17 @@ export const ProtocolForm = () => {
         );
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const protocol = {
             ...formData,
             products,
         };
 
-        console.log(protocol);
+        await createProtocol(protocol);
 
         setSavedProtocol(protocol);
+
+        alert("Protokół zapisany w Firebase ✅");
     };
 
     return (
