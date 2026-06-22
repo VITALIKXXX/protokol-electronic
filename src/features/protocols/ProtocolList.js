@@ -1,4 +1,5 @@
 import { Section, SectionTitle } from "./ProtocolForm.styles";
+import { ProtocolCard } from "./ProtocolCard";
 
 export const ProtocolList = ({ protocols }) => {
     if (!protocols.length) {
@@ -15,11 +16,10 @@ export const ProtocolList = ({ protocols }) => {
             <SectionTitle>Zapisane protokoły</SectionTitle>
 
             {protocols.map((protocol) => (
-                <div key={protocol.id}>
-                    <strong>{protocol.protocolNumber || "Bez numeru"}</strong> —{" "}
-                    {protocol.breeder || "Brak hodowcy"} —{" "}
-                    {protocol.executionDate || protocol.orderDate || "Brak daty"}
-                </div>
+                <ProtocolCard
+                    key={protocol.id}
+                    protocol={protocol}
+                />
             ))}
         </Section>
     );
