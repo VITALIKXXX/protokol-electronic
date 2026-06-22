@@ -5,9 +5,9 @@ import {
     DateText,
 } from "./ProtocolCard.styles";
 
-export const ProtocolCard = ({ protocol }) => {
+export const ProtocolCard = ({ protocol, onClick }) => {
     return (
-        <Card>
+        <Card onClick={onClick}>
             <Number>
                 {protocol.protocolNumber || "Bez numeru"}
             </Number>
