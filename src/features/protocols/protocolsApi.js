@@ -3,6 +3,8 @@ import {
     collection,
     serverTimestamp,
     onSnapshot,
+    deleteDoc,
+    doc,
 } from "firebase/firestore";
 
 import { db } from "../../core/firebase/firebaseApp.js";
@@ -26,4 +28,9 @@ export const subscribeProtocols = (callback) => {
             }))
         );
     });
+};
+
+export const removeProtocol = async (id) => {
+    const protocolRef = doc(db, "protocols", id);
+    await deleteDoc(protocolRef);
 };

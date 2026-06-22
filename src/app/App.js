@@ -4,6 +4,7 @@ import { ProtocolList } from "../features/protocols/ProtocolList";
 import { subscribeProtocols } from "../features/protocols/protocolsApi";
 import { AppShell, Header, Title, Subtitle, Main } from "./App.styles";
 import { ProtocolDetails } from "../features/protocols/ProtocolDetails";
+import { removeProtocol } from "../features/protocols/protocolsApi";
 
 const App = () => {
   const [protocols, setProtocols] = useState([]);
@@ -15,6 +16,17 @@ const App = () => {
 
     return () => unsubscribe();
   }, []);
+
+  const handleDeleteProtocol = async (id) => {
+    const ok = window.confirm("Na pewno usunąć ten protokół?");
+    if (!ok) return;
+
+    await removeProtocol(id);
+
+    if (selectedProtocol?.id === id) {
+      setSelectedProtocol(null);
+    }
+  };
 
   return (
     <AppShell>
@@ -29,7 +41,10 @@ const App = () => {
           protocols={protocols}
           onSelect={setSelectedProtocol}
         />
-        <ProtocolDetails protocol={selectedProtocol} />
+        <ProtocolDetails
+          protocol={selectedProtocol}
+          onDelete={handleDeleteProtocol}
+        />
       </Main>
     </AppShell>
   );
