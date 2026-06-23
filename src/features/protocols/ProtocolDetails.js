@@ -1,4 +1,4 @@
-export const ProtocolDetails = ({ protocol, onDelete }) => {
+export const ProtocolDetails = ({ protocol, onDelete, onEdit }) => {
     if (!protocol) return null;
 
     return (
@@ -19,6 +19,12 @@ export const ProtocolDetails = ({ protocol, onDelete }) => {
                 <strong>Uwagi:</strong>{" "}
                 {protocol.notes || "-"}
             </p>
+            {onEdit && (
+                <button type="button" onClick={() => onEdit(protocol)}>
+                    Edytuj protokół
+                </button>
+            )}
+
             {onDelete && (
                 <button type="button" onClick={() => onDelete(protocol.id)}>
                     Usuń protokół

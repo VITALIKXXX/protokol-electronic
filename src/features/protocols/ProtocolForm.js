@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { createProtocol } from "./protocolsApi";
+import { useState, useEffect } from "react";
+import { createProtocol, updateProtocol } from "./protocolsApi";
 import {
     Card,
     Section,
@@ -28,7 +28,7 @@ const emptyProduct = {
 
 const getToday = () => new Date().toISOString().slice(0, 10);
 
-export const ProtocolForm = () => {
+export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
     const [products, setProducts] = useState([{ ...emptyProduct }]);
 
     const [formData, setFormData] = useState({
@@ -61,6 +61,28 @@ export const ProtocolForm = () => {
     });
 
     const [savedProtocol, setSavedProtocol] = useState(null);
+
+    useEffect(() => {
+        if (!editingProtocol) return;
+
+        const { products: editedProducts = [], id, createdAt, createdAtMs, ...rest } = editingProtocol;
+
+        setFormData((prev) => ({
+            ...prev,
+            ...rest,
+            treatments: rest.treatments || [],
+            bhp: rest.bhp || {
+                sterileEquipment: false,
+                protectiveClothing: false,
+                wasteSecured: false,
+                dirtyClothesPacked: false,
+            },
+        }));
+
+        setProducts(editedProducts.length ? editedProducts : [{ ...emptyProduct }]);
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, [editingProtocol]);
 
 
     const updateField = (field) => (event) => {
@@ -120,8 +142,15 @@ export const ProtocolForm = () => {
             products,
         };
 
-        await createProtocol(protocol);
+        if (editingProtocol?.id) {
+            await updateProtocol(editingProtocol.id, protocol);
+            setSavedProtocol(protocol);
+            onFinishEdit();
+            alert("Protokół zaktualizowany ✅");
+            return;
+        }
 
+        await createProtocol(protocol);
         setSavedProtocol(protocol);
 
         alert("Protokół zapisany w Firebase ✅");
@@ -218,24 +247,24 @@ export const ProtocolForm = () => {
                     <CheckboxLabel>
                         <input
                             type="checkbox"
-                            checked={formData.treatments.includes(" Deratyzacja")}
-                            onChange={toggleTreatment(" Deratyzacja")}
+                            checked={formData.treatments.includes("Deratyzacja")}
+                            onChange={toggleTreatment("Deratyzacja")}
                         />
                         Deratyzacja
                     </CheckboxLabel>
                     <CheckboxLabel>
                         <input
                             type="checkbox"
-                            checked={formData.treatments.includes(" Dezynfekcja")}
-                            onChange={toggleTreatment(" Dezynfekcja")}
+                            checked={formData.treatments.includes("Dezynfekcja")}
+                            onChange={toggleTreatment("Dezynfekcja")}
                         />
                         Dezynfekcja
                     </CheckboxLabel>
                     <CheckboxLabel>
                         <input
                             type="checkbox"
-                            checked={formData.treatments.includes(" Dezynsekcja")}
-                            onChange={toggleTreatment(" Dezynsekcja")}
+                            checked={formData.treatments.includes("Dezynsekcja")}
+                            onChange={toggleTreatment("Dezynsekcja")}
                         />
                         Dezynsekcja
                     </CheckboxLabel>
@@ -315,27 +344,48 @@ export const ProtocolForm = () => {
 
                     <Field>
                         <Label>Miejscowość</Label>
-                        <Input placeholder="np. Poznań" />
+                        <Input
+                            value={formData.city}
+                            onChange={updateField("city")}
+                            placeholder="np. Poznań"
+                        />
                     </Field>
 
                     <Field>
                         <Label>Budynek</Label>
-                        <Input placeholder="np. Kurnik 1" />
+                        <Input
+                            value={formData.building}
+                            onChange={updateField("building")}
+                            placeholder="np. Kurnik 1"
+                        />
                     </Field>
 
                     <Field>
                         <Label>Wiek zwierząt</Label>
-                        <Input placeholder="np. 21 dni" />
+                        <Input
+                            value={formData.animalAge}
+                            onChange={updateField("animalAge")}
+                            placeholder="np. 21 dni"
+                        />
                     </Field>
 
                     <Field>
                         <Label>Rodzaj zwierząt</Label>
-                        <Input placeholder="np. brojlery" />
+                        <Input
+                            value={formData.animalType}
+                            onChange={updateField("animalType")}
+                            placeholder="np. brojlery"
+                        />
                     </Field>
 
                     <Field>
                         <Label>Ilość zwierząt</Label>
-                        <Input type="number" placeholder="np. 25000" />
+                        <Input
+                            type="number"
+                            value={formData.animalCount}
+                            onChange={updateField("animalCount")}
+                            placeholder="np. 25000"
+                        />
                     </Field>
                 </Grid>
             </Section>
@@ -422,7 +472,11 @@ export const ProtocolForm = () => {
                 <Grid>
                     <Field>
                         <Label>Temperatura transportu</Label>
-                        <Input placeholder="np. 2–8°C" />
+                        <Input
+                            value={formData.transportTemperature}
+                            onChange={updateField("transportTemperature")}
+                            placeholder="np. 2–8°C"
+                        />
                     </Field>
                 </Grid>
 
@@ -509,7 +563,7 @@ export const ProtocolForm = () => {
 
             <ButtonsRow>
                 <Button type="button" onClick={handleSave}>
-                    Zapisz protokół
+                    {editingProtocol ? "Zapisz zmiany" : "Zapisz protokół"}
                 </Button>
             </ButtonsRow>
 

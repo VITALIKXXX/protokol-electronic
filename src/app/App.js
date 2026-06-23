@@ -11,6 +11,10 @@ const App = () => {
 
   const [selectedProtocol, setSelectedProtocol] = useState(null);
 
+  const [editingProtocol, setEditingProtocol] = useState(null);
+
+  const [query, setQuery] = useState("");
+
   useEffect(() => {
     const unsubscribe = subscribeProtocols(setProtocols);
 
@@ -28,6 +32,18 @@ const App = () => {
     }
   };
 
+  const filteredProtocols = protocols.filter((protocol) => {
+    const q = query.trim().toLowerCase();
+
+    if (!q) return true;
+
+    return (
+      String(protocol.protocolNumber || "").toLowerCase().includes(q) ||
+      String(protocol.breeder || "").toLowerCase().includes(q) ||
+      String(protocol.executionDate || "").toLowerCase().includes(q)
+    );
+  });
+
   return (
     <AppShell>
       <Header>
@@ -36,14 +52,23 @@ const App = () => {
       </Header>
 
       <Main>
-        <ProtocolForm />
+        <ProtocolForm
+          editingProtocol={editingProtocol}
+          onFinishEdit={() => setEditingProtocol(null)}
+        />
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Szukaj protokołu..."
+        />
         <ProtocolList
-          protocols={protocols}
+          protocols={filteredProtocols}
           onSelect={setSelectedProtocol}
         />
         <ProtocolDetails
           protocol={selectedProtocol}
           onDelete={handleDeleteProtocol}
+          onEdit={setEditingProtocol}
         />
       </Main>
     </AppShell>

@@ -5,6 +5,7 @@ import {
     onSnapshot,
     deleteDoc,
     doc,
+    updateDoc,
 } from "firebase/firestore";
 
 import { db } from "../../core/firebase/firebaseApp.js";
@@ -33,4 +34,13 @@ export const subscribeProtocols = (callback) => {
 export const removeProtocol = async (id) => {
     const protocolRef = doc(db, "protocols", id);
     await deleteDoc(protocolRef);
+};
+
+export const updateProtocol = async (id, protocol) => {
+    const protocolRef = doc(db, "protocols", id);
+
+    await updateDoc(protocolRef, {
+        ...protocol,
+        updatedAtMs: Date.now(),
+    });
 };
