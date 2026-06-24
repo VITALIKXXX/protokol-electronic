@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { createProtocol, updateProtocol } from "./protocolsApi";
+import {
+    createProtocol,
+    updateProtocol,
+    getNextProtocolNumber,
+} from "./protocolsApi";
 import {
     Card,
     Section,
@@ -63,25 +67,44 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
     const [savedProtocol, setSavedProtocol] = useState(null);
 
     useEffect(() => {
-        if (!editingProtocol) return;
+        if (editingProtocol) {
+            const {
+                products: editedProducts = [],
+                id,
+                createdAt,
+                createdAtMs,
+                updatedAtMs,
+                ...rest
+            } = editingProtocol;
 
-        const { products: editedProducts = [], id, createdAt, createdAtMs, ...rest } = editingProtocol;
+            setFormData((prev) => ({
+                ...prev,
+                ...rest,
+                treatments: rest.treatments || [],
+                bhp: rest.bhp || {
+                    sterileEquipment: false,
+                    protectiveClothing: false,
+                    wasteSecured: false,
+                    dirtyClothesPacked: false,
+                },
+            }));
 
-        setFormData((prev) => ({
-            ...prev,
-            ...rest,
-            treatments: rest.treatments || [],
-            bhp: rest.bhp || {
-                sterileEquipment: false,
-                protectiveClothing: false,
-                wasteSecured: false,
-                dirtyClothesPacked: false,
-            },
-        }));
+            setProducts(editedProducts.length ? editedProducts : [{ ...emptyProduct }]);
 
-        setProducts(editedProducts.length ? editedProducts : [{ ...emptyProduct }]);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            return;
+        }
 
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        const setNextNumber = async () => {
+            const nextProtocolNumber = await getNextProtocolNumber();
+
+            setFormData((prev) => ({
+                ...prev,
+                protocolNumber: prev.protocolNumber || nextProtocolNumber,
+            }));
+        };
+
+        setNextNumber();
     }, [editingProtocol]);
 
 

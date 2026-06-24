@@ -6,6 +6,7 @@ import {
     deleteDoc,
     doc,
     updateDoc,
+    getDocs,
 } from "firebase/firestore";
 
 import { db } from "../../core/firebase/firebaseApp.js";
@@ -43,4 +44,12 @@ export const updateProtocol = async (id, protocol) => {
         ...protocol,
         updatedAtMs: Date.now(),
     });
+};
+
+export const getNextProtocolNumber = async () => {
+    const snapshot = await getDocs(protocolsCollection);
+    const nextNumber = snapshot.size + 1;
+    const year = new Date().getFullYear();
+
+    return `${String(nextNumber).padStart(3, "0")}/${year}`;
 };
