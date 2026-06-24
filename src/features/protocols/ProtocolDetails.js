@@ -1,3 +1,7 @@
+import { generateProtocolPdf } from "./generateProtocolPdf";
+
+
+
 export const ProtocolDetails = ({ protocol, onDelete, onEdit }) => {
     if (!protocol) return null;
 
@@ -24,6 +28,13 @@ export const ProtocolDetails = ({ protocol, onDelete, onEdit }) => {
                     Edytuj protokół
                 </button>
             )}
+
+            <button
+                type="button"
+                onClick={() => generateProtocolPdf(protocol)}
+            >
+                PDF
+            </button>
 
             {onDelete && (
                 <button type="button" onClick={() => onDelete(protocol.id)}>
