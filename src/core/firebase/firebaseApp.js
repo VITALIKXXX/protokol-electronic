@@ -1,5 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import {
+    getFirestore,
+    enableIndexedDbPersistence,
+} from "firebase/firestore";
 
 
 const firebaseConfig = {
@@ -16,3 +19,12 @@ const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
 
+enableIndexedDbPersistence(db).catch((error) => {
+    if (error.code === "failed-precondition") {
+        console.warn("Offline persistence działa tylko w jednej karcie naraz.");
+    }
+
+    if (error.code === "unimplemented") {
+        console.warn("Ta przeglądarka nie obsługuje offline persistence.");
+    }
+});
