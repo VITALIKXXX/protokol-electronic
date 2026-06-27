@@ -1,10 +1,16 @@
 {
   "files": {
-    "main.js": "/protokol-electronic/static/js/main.7ff34396.js",
+    "main.js": "/protokol-electronic/static/js/main.adff2010.js",
+    "static/js/239.78d5ff6f.chunk.js": "/protokol-electronic/static/js/239.78d5ff6f.chunk.js",
+    "static/js/977.6dd47c43.chunk.js": "/protokol-electronic/static/js/977.6dd47c43.chunk.js",
+    "static/js/455.cb1cd555.chunk.js": "/protokol-electronic/static/js/455.cb1cd555.chunk.js",
     "index.html": "/protokol-electronic/index.html",
-    "main.7ff34396.js.map": "/protokol-electronic/static/js/main.7ff34396.js.map"
+    "main.adff2010.js.map": "/protokol-electronic/static/js/main.adff2010.js.map",
+    "239.78d5ff6f.chunk.js.map": "/protokol-electronic/static/js/239.78d5ff6f.chunk.js.map",
+    "977.6dd47c43.chunk.js.map": "/protokol-electronic/static/js/977.6dd47c43.chunk.js.map",
+    "455.cb1cd555.chunk.js.map": "/protokol-electronic/static/js/455.cb1cd555.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.7ff34396.js"
+    "static/js/main.adff2010.js"
   ]
 }
