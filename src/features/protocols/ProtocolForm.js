@@ -57,7 +57,8 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
         authorizedPerson: "",
         workers: "",
         treatments: [],
-        signature: "",
+        farmerSignature: "",
+        workerSignature: "",
         bhp: {
             sterileEquipment: false,
             protectiveClothing: false,
@@ -181,13 +182,19 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
         alert("Protokół zapisany w Firebase ✅");
     };
 
-    const saveSignature = (signatureImage) => {
+
+    const saveFarmerSignature = (signatureImage) => {
         setFormData((prev) => ({
             ...prev,
-            signature: signatureImage,
+            farmerSignature: signatureImage,
         }));
+    };
 
-        alert("Podpis zapisany ✅");
+    const saveWorkerSignature = (signatureImage) => {
+        setFormData((prev) => ({
+            ...prev,
+            workerSignature: signatureImage,
+        }));
     };
 
     return (
@@ -564,7 +571,23 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
 
             <Section>
                 <SectionTitle>Podpisy / osoby</SectionTitle>
-                <SignaturePad onSave={saveSignature} />
+                <SectionTitle>Podpis hodowcy</SectionTitle>
+
+                <SignaturePad onSave={saveFarmerSignature} />
+
+                {formData.farmerSignature && (
+                    <p>✅ Podpis hodowcy zapisany</p>
+                )}
+
+                <br />
+
+                <SectionTitle>Podpis technika</SectionTitle>
+
+                <SignaturePad onSave={saveWorkerSignature} />
+
+                {formData.workerSignature && (
+                    <p>✅ Podpis technika zapisany</p>
+                )}
 
                 {formData.signature && (
                     <p>Podpis zapisany ✅</p>

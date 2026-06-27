@@ -111,9 +111,28 @@ export const generateProtocolPdf = (protocol) => {
 
     addSection("PODPIS HODOWCY");
 
-    if (protocol.signature) {
+    if (protocol.farmerSignature) {
         pdf.addImage(
-            protocol.signature,
+            protocol.farmerSignature,
+            "PNG",
+            20,
+            y,
+            80,
+            35
+        );
+
+        y += 45;
+    } else {
+        addRow("-", "Brak podpisu");
+    }
+
+    checkPage();
+
+    addSection("PODPIS TECHNIKA");
+
+    if (protocol.workerSignature) {
+        pdf.addImage(
+            protocol.workerSignature,
             "PNG",
             20,
             y,
