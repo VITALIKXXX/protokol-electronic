@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.js": "/protokol-electronic/static/js/main.adff2010.js",
-    "static/js/239.78d5ff6f.chunk.js": "/protokol-electronic/static/js/239.78d5ff6f.chunk.js",
-    "static/js/977.6dd47c43.chunk.js": "/protokol-electronic/static/js/977.6dd47c43.chunk.js",
-    "static/js/455.cb1cd555.chunk.js": "/protokol-electronic/static/js/455.cb1cd555.chunk.js",
-    "index.html": "/protokol-electronic/index.html",
-    "main.adff2010.js.map": "/protokol-electronic/static/js/main.adff2010.js.map",
-    "239.78d5ff6f.chunk.js.map": "/protokol-electronic/static/js/239.78d5ff6f.chunk.js.map",
-    "977.6dd47c43.chunk.js.map": "/protokol-electronic/static/js/977.6dd47c43.chunk.js.map",
-    "455.cb1cd555.chunk.js.map": "/protokol-electronic/static/js/455.cb1cd555.chunk.js.map"
+    "main.js": "/static/js/main.5e50a84b.js",
+    "static/js/239.78d5ff6f.chunk.js": "/static/js/239.78d5ff6f.chunk.js",
+    "static/js/977.6dd47c43.chunk.js": "/static/js/977.6dd47c43.chunk.js",
+    "static/js/455.eee2d186.chunk.js": "/static/js/455.eee2d186.chunk.js",
+    "index.html": "/index.html",
+    "main.5e50a84b.js.map": "/static/js/main.5e50a84b.js.map",
+    "239.78d5ff6f.chunk.js.map": "/static/js/239.78d5ff6f.chunk.js.map",
+    "977.6dd47c43.chunk.js.map": "/static/js/977.6dd47c43.chunk.js.map",
+    "455.eee2d186.chunk.js.map": "/static/js/455.eee2d186.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.adff2010.js"
+    "static/js/main.5e50a84b.js"
   ]
 }
