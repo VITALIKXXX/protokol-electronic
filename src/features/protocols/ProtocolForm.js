@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { SignaturePad } from "./SignaturePad";
 import {
     createProtocol,
     updateProtocol,
@@ -62,6 +63,7 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
             wasteSecured: false,
             dirtyClothesPacked: false,
         },
+        signature: "",
     });
 
     const [savedProtocol, setSavedProtocol] = useState(null);
@@ -177,6 +179,15 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
         setSavedProtocol(protocol);
 
         alert("Protokół zapisany w Firebase ✅");
+    };
+
+    const saveSignature = (signatureImage) => {
+        setFormData((prev) => ({
+            ...prev,
+            signature: signatureImage,
+        }));
+
+        alert("Podpis zapisany ✅");
     };
 
     return (
@@ -553,6 +564,11 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
 
             <Section>
                 <SectionTitle>Podpisy / osoby</SectionTitle>
+                <SignaturePad onSave={saveSignature} />
+
+                {formData.signature && (
+                    <p>Podpis zapisany ✅</p>
+                )}
 
                 <Grid>
                     <Field>
