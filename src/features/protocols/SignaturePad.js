@@ -16,7 +16,7 @@ export const SignaturePad = ({ onSave }) => {
         }
 
         const signatureImage = signatureRef.current
-            .getTrimmedCanvas()
+            .getCanvas()
             .toDataURL("image/png");
 
         onSave(signatureImage);

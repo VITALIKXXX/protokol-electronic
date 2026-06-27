@@ -57,13 +57,13 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
         authorizedPerson: "",
         workers: "",
         treatments: [],
+        signature: "",
         bhp: {
             sterileEquipment: false,
             protectiveClothing: false,
             wasteSecured: false,
             dirtyClothesPacked: false,
         },
-        signature: "",
     });
 
     const [savedProtocol, setSavedProtocol] = useState(null);
