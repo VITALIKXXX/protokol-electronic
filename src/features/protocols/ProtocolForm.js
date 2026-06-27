@@ -67,6 +67,43 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
         },
     });
 
+    const resetForm = async () => {
+        const nextProtocolNumber = await getNextProtocolNumber();
+
+        setFormData({
+            protocolNumber: nextProtocolNumber,
+            orderDate: getToday(),
+            orderTime: "",
+            orderingPerson: "",
+            executionDate: getToday(),
+            startTime: "",
+            endTime: "",
+            breeder: "",
+            city: "",
+            building: "",
+            animalAge: "",
+            animalType: "",
+            animalCount: "",
+            notes: "",
+            dateChangeReason: "",
+            transportTemperature: "",
+            supervisor: "",
+            authorizedPerson: "",
+            workers: "",
+            farmerSignature: "",
+            workerSignature: "",
+            treatments: [],
+            bhp: {
+                sterileEquipment: false,
+                protectiveClothing: false,
+                wasteSecured: false,
+                dirtyClothesPacked: false,
+            },
+        });
+
+        setProducts([{ ...emptyProduct }]);
+    };
+
     const [savedProtocol, setSavedProtocol] = useState(null);
 
     useEffect(() => {
@@ -172,12 +209,14 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
             await updateProtocol(editingProtocol.id, protocol);
             setSavedProtocol(protocol);
             onFinishEdit();
+            await resetForm();
             alert("Protokół zaktualizowany ✅");
             return;
         }
 
         await createProtocol(protocol);
         setSavedProtocol(protocol);
+        await resetForm();
 
         alert("Protokół zapisany w Firebase ✅");
     };
@@ -570,7 +609,6 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
             </Section>
 
             <Section>
-                <SectionTitle>Podpisy / osoby</SectionTitle>
                 <SectionTitle>Podpis hodowcy</SectionTitle>
 
                 <SignaturePad onSave={saveFarmerSignature} />

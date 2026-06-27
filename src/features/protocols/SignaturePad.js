@@ -24,7 +24,6 @@ export const SignaturePad = ({ onSave }) => {
 
     return (
         <Box>
-            <h3>Podpis hodowcy / osoby upoważnionej</h3>
 
             <CanvasBox>
                 <SignatureCanvas
