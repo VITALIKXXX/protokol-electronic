@@ -1,7 +1,7 @@
 import { Section, SectionTitle } from "./ProtocolForm.styles";
 import { ProtocolCard } from "./ProtocolCard";
 
-export const ProtocolList = ({ protocols, onSelect }) => {
+export const ProtocolList = ({ protocols, onEdit, onDelete }) => {
     if (!protocols.length) {
         return (
             <Section>
@@ -19,7 +19,8 @@ export const ProtocolList = ({ protocols, onSelect }) => {
                 <ProtocolCard
                     key={protocol.id}
                     protocol={protocol}
-                    onClick={() => onSelect(protocol)}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
                 />
             ))}
         </Section>

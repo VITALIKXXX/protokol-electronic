@@ -3,7 +3,6 @@ import { ProtocolForm } from "../features/protocols/ProtocolForm";
 import { ProtocolList } from "../features/protocols/ProtocolList";
 import { subscribeProtocols } from "../features/protocols/protocolsApi";
 import { AppShell, Header, Title, Subtitle, Main } from "./App.styles";
-import { ProtocolDetails } from "../features/protocols/ProtocolDetails";
 import { removeProtocol } from "../features/protocols/protocolsApi";
 
 const App = () => {
@@ -63,12 +62,8 @@ const App = () => {
         />
         <ProtocolList
           protocols={filteredProtocols}
-          onSelect={setSelectedProtocol}
-        />
-        <ProtocolDetails
-          protocol={selectedProtocol}
-          onDelete={handleDeleteProtocol}
           onEdit={setEditingProtocol}
+          onDelete={handleDeleteProtocol}
         />
       </Main>
     </AppShell>

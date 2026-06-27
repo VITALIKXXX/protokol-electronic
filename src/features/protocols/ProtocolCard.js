@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { generateProtocolPdf } from "./generateProtocolPdf";
 import {
     Card,
     Number,
@@ -5,20 +7,43 @@ import {
     DateText,
 } from "./ProtocolCard.styles";
 
-export const ProtocolCard = ({ protocol, onClick }) => {
-    return (
-        <Card onClick={onClick}>
-            <Number>
-                {protocol.protocolNumber || "Bez numeru"}
-            </Number>
+export const ProtocolCard = ({ protocol, onEdit, onDelete }) => {
+    const [isOpen, setIsOpen] = useState(false);
 
-            <Meta>
-                Hodowca: {protocol.breeder || "Brak"}
-            </Meta>
+    return (
+        <Card onClick={() => setIsOpen((prev) => !prev)}>
+            <Number>{protocol.protocolNumber || "Bez numeru"}</Number>
+
+            <Meta>Hodowca: {protocol.breeder || "Brak"}</Meta>
 
             <DateText>
-                {protocol.executionDate || protocol.orderDate || "Brak daty"}
+                Data wykonania: {protocol.executionDate || protocol.orderDate || "Brak daty"}
             </DateText>
+
+            {isOpen && (
+                <div onClick={(e) => e.stopPropagation()}>
+                    <p>
+                        <strong>Osoba zlecająca:</strong>{" "}
+                        {protocol.orderingPerson || "-"}
+                    </p>
+
+                    <p>
+                        <strong>Uwagi:</strong> {protocol.notes || "-"}
+                    </p>
+
+                    <button type="button" onClick={() => generateProtocolPdf(protocol)}>
+                        PDF
+                    </button>
+
+                    <button type="button" onClick={() => onEdit(protocol)}>
+                        Edytuj
+                    </button>
+
+                    <button type="button" onClick={() => onDelete(protocol.id)}>
+                        Usuń
+                    </button>
+                </div>
+            )}
         </Card>
     );
 };
