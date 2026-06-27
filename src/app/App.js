@@ -4,6 +4,7 @@ import { ProtocolList } from "../features/protocols/ProtocolList";
 import { subscribeProtocols } from "../features/protocols/protocolsApi";
 import { AppShell, Header, Title, Subtitle, Main } from "./App.styles";
 import { removeProtocol } from "../features/protocols/protocolsApi";
+import { NetworkStatus } from "../features/network/NetworkStatus";
 
 const App = () => {
   const [protocols, setProtocols] = useState([]);
@@ -48,6 +49,7 @@ const App = () => {
       <Header>
         <Title>Protokół elektroniczny</Title>
         <Subtitle>Formularz wykonania usługi</Subtitle>
+        <NetworkStatus />
       </Header>
 
       <Main>
