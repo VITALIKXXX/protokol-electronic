@@ -107,6 +107,24 @@ export const generateProtocolPdf = (protocol) => {
     pdf.setFontSize(10);
     const notes = pdf.splitTextToSize(protocol.notes || "-", 180);
     pdf.text(notes, 15, y);
+    checkPage();
+
+    addSection("PODPIS HODOWCY");
+
+    if (protocol.signature) {
+        pdf.addImage(
+            protocol.signature,
+            "PNG",
+            20,
+            y,
+            80,
+            35
+        );
+
+        y += 45;
+    } else {
+        addRow("-", "Brak podpisu");
+    }
 
     window.open(pdf.output("bloburl"), "_blank");
 };
