@@ -13,8 +13,6 @@ const App = () => {
 
   const [editingProtocol, setEditingProtocol] = useState(null);
 
-  const [query, setQuery] = useState("");
-
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -35,7 +33,7 @@ const App = () => {
   };
 
   const filteredProtocols = protocols.filter((protocol) => {
-    const q = query.trim().toLowerCase();
+    const q = search.trim().toLowerCase();
 
     if (!q) return true;
 
