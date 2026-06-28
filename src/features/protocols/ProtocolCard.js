@@ -5,6 +5,8 @@ import {
     Number,
     Meta,
     DateText,
+    Actions,
+    ActionButton,
 } from "./ProtocolCard.styles";
 
 export const ProtocolCard = ({ protocol, onEdit, onDelete }) => {
@@ -31,17 +33,23 @@ export const ProtocolCard = ({ protocol, onEdit, onDelete }) => {
                         <strong>Uwagi:</strong> {protocol.notes || "-"}
                     </p>
 
-                    <button type="button" onClick={() => generateProtocolPdf(protocol)}>
-                        PDF
-                    </button>
+                    <Actions>
+                        <ActionButton type="button" onClick={() => generateProtocolPdf(protocol)}>
+                            PDF
+                        </ActionButton>
 
-                    <button type="button" onClick={() => onEdit(protocol)}>
-                        Edytuj
-                    </button>
+                        <ActionButton type="button" onClick={() => onEdit(protocol)}>
+                            Edytuj
+                        </ActionButton>
 
-                    <button type="button" onClick={() => onDelete(protocol.id)}>
-                        Usuń
-                    </button>
+                        <ActionButton
+                            type="button"
+                            $variant="danger"
+                            onClick={() => onDelete(protocol.id)}
+                        >
+                            Usuń
+                        </ActionButton>
+                    </Actions>
                 </div>
             )}
         </Card>
