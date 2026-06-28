@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ProtocolForm } from "../features/protocols/ProtocolForm";
 import { ProtocolList } from "../features/protocols/ProtocolList";
 import { subscribeProtocols } from "../features/protocols/protocolsApi";
-import { AppShell, Header, Title, Subtitle, Main } from "./App.styles";
+import { AppShell, Header, Title, Subtitle, Main, SearchWrapper, SearchIcon, SearchInput } from "./App.styles";
 import { removeProtocol } from "../features/protocols/protocolsApi";
 import { NetworkStatus } from "../features/network/NetworkStatus";
 
@@ -14,6 +14,8 @@ const App = () => {
   const [editingProtocol, setEditingProtocol] = useState(null);
 
   const [query, setQuery] = useState("");
+
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const unsubscribe = subscribeProtocols(setProtocols);
@@ -57,11 +59,15 @@ const App = () => {
           editingProtocol={editingProtocol}
           onFinishEdit={() => setEditingProtocol(null)}
         />
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Szukaj protokołu..."
-        />
+        <SearchWrapper>
+          <SearchIcon>🔍</SearchIcon>
+
+          <SearchInput
+            placeholder="Szukaj protokołu..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </SearchWrapper>
         <ProtocolList
           protocols={filteredProtocols}
           onEdit={setEditingProtocol}
