@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { generateProtocolPdf } from "./generateProtocolPdf";
+import { generateProtocolPdfV2 } from "./generateProtocolPdfV2";
 import {
     Card,
     Number,
@@ -34,7 +34,7 @@ export const ProtocolCard = ({ protocol, onEdit, onDelete }) => {
                     </p>
 
                     <Actions>
-                        <ActionButton type="button" onClick={() => generateProtocolPdf(protocol)}>
+                        <ActionButton type="button" onClick={() => generateProtocolPdfV2(protocol)}>
                             PDF
                         </ActionButton>
 
