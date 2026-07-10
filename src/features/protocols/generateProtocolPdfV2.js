@@ -249,5 +249,11 @@ export const generateProtocolPdfV2 = (protocol) => {
         );
     }
 
-    window.open(pdf.output("bloburl"), "_blank");
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (isMobile) {
+        pdf.save(`protokol-${protocol.protocolNumber || Date.now()}.pdf`);
+    } else {
+        window.open(pdf.output("bloburl"), "_blank");
+    }
 };
