@@ -197,24 +197,33 @@ export const generateProtocolPdfV2 = (protocol) => {
     pdf.setFont("helvetica", "normal");
 
     // OPISY PODPISÓW U GÓRY
-    pdf.text(["Podpis hodowcy lub osoby nadzorujacej", "szczepienie"], supervisorX + 6, signaturesY + 7);
-    pdf.text(["Podpis Technika"], farmerX + 7, signaturesY + 7);
+    pdf.text(
+        ["Podpis hodowcy lub osoby", "nadzorujacej szczepienie"],
+        supervisorX + 5,
+        signaturesY + 7
+    );
+
+    pdf.text(
+        "Podpis technika",
+        farmerX + 12,
+        signaturesY + 7
+    );
 
     // PODPISY
-    if (protocol.workerSignature) {
+    if (protocol.farmerSignature) {
         pdf.addImage(
-            protocol.workerSignature,
+            protocol.farmerSignature,
             "PNG",
-            supervisorX + 8,
+            supervisorX + 7,
             signaturesY + 20,
             34,
             14
         );
     }
 
-    if (protocol.farmerSignature) {
+    if (protocol.workerSignature) {
         pdf.addImage(
-            protocol.farmerSignature,
+            protocol.workerSignature,
             "PNG",
             farmerX + 8,
             signaturesY + 20,
@@ -230,10 +239,12 @@ export const generateProtocolPdfV2 = (protocol) => {
     // PRAWA KOLUMNA — wykonujący zabiegi
     pdf.text("Imiona, nazwiska wykonujacych zabiegi:", workersX + 3, signaturesY + 6);
 
-    const workers = (protocol.workers || "")
-        .split(",")
-        .map((worker) => worker.trim())
-        .filter(Boolean);
+    const workers = Array.isArray(protocol.workers)
+        ? protocol.workers.filter(Boolean)
+        : String(protocol.workers || "")
+            .split(",")
+            .map((worker) => worker.trim())
+            .filter(Boolean);
 
     // 18 osób: 9 po lewej, 9 po prawej
     for (let i = 0; i < 18; i++) {

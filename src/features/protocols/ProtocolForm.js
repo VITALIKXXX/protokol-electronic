@@ -55,7 +55,7 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
         transportTemperature: "",
         supervisor: "",
         authorizedPerson: "",
-        workers: "",
+        workers: [""],
         treatments: [],
         farmerSignature: "",
         workerSignature: "",
@@ -89,7 +89,7 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
             transportTemperature: "",
             supervisor: "",
             authorizedPerson: "",
-            workers: "",
+            workers: [""],
             farmerSignature: "",
             workerSignature: "",
             treatments: [],
@@ -117,9 +117,17 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
                 ...rest
             } = editingProtocol;
 
+            const normalizedWorkers = Array.isArray(rest.workers)
+                ? rest.workers
+                : String(rest.workers || "")
+                    .split(",")
+                    .map((worker) => worker.trim())
+                    .filter(Boolean);
+
             setFormData((prev) => ({
                 ...prev,
                 ...rest,
+                workers: normalizedWorkers.length ? normalizedWorkers : [""],
                 treatments: rest.treatments || [],
                 bhp: rest.bhp || {
                     sterileEquipment: false,
@@ -129,9 +137,17 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
                 },
             }));
 
-            setProducts(editedProducts.length ? editedProducts : [{ ...emptyProduct }]);
+            setProducts(
+                editedProducts.length
+                    ? editedProducts
+                    : [{ ...emptyProduct }]
+            );
 
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+            });
+
             return;
         }
 
@@ -140,7 +156,8 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
 
             setFormData((prev) => ({
                 ...prev,
-                protocolNumber: prev.protocolNumber || nextProtocolNumber,
+                protocolNumber:
+                    prev.protocolNumber || nextProtocolNumber,
             }));
         };
 
@@ -233,6 +250,29 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
         setFormData((prev) => ({
             ...prev,
             workerSignature: signatureImage,
+        }));
+    };
+
+    const addWorker = () => {
+        setFormData((prev) => ({
+            ...prev,
+            workers: [...prev.workers, ""],
+        }));
+    };
+
+    const updateWorker = (index) => (event) => {
+        setFormData((prev) => ({
+            ...prev,
+            workers: prev.workers.map((worker, workerIndex) =>
+                workerIndex === index ? event.target.value : worker
+            ),
+        }));
+    };
+
+    const removeWorker = (indexToRemove) => {
+        setFormData((prev) => ({
+            ...prev,
+            workers: prev.workers.filter((_, index) => index !== indexToRemove),
         }));
     };
 
@@ -652,11 +692,28 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
 
                     <Field>
                         <Label>Osoby wykonujące zabieg</Label>
-                        <Input
-                            value={formData.workers}
-                            onChange={updateField("workers")}
-                            placeholder="np. Vitalii, Tomek, Kasia"
-                        />
+                        {formData.workers.map((worker, index) => (
+                            <div key={index}>
+                                <Input
+                                    value={worker}
+                                    onChange={updateWorker(index)}
+                                    placeholder={`Osoba ${index + 1}`}
+                                />
+
+                                {formData.workers.length > 1 && (
+                                    <SecondaryButton
+                                        type="button"
+                                        onClick={() => removeWorker(index)}
+                                    >
+                                        Usuń osobę
+                                    </SecondaryButton>
+                                )}
+                            </div>
+                        ))}
+
+                        <SecondaryButton type="button" onClick={addWorker}>
+                            + Dodaj kolejną osobę
+                        </SecondaryButton>
                     </Field>
                 </Grid>
             </Section>
