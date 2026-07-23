@@ -52,7 +52,7 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
         animalCount: "",
         notes: "",
         dateChangeReason: "",
-        transportTemperature: "",
+        transportTemperature: "2-8°C",
         supervisor: "",
         authorizedPerson: "",
         workers: [""],
@@ -60,10 +60,10 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
         farmerSignature: "",
         workerSignature: "",
         bhp: {
-            sterileEquipment: false,
-            protectiveClothing: false,
-            wasteSecured: false,
-            dirtyClothesPacked: false,
+            sterileEquipment: true,
+            protectiveClothing: true,
+            wasteSecured: true,
+            dirtyClothesPacked: true,
         },
     });
 
@@ -86,7 +86,7 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
             animalCount: "",
             notes: "",
             dateChangeReason: "",
-            transportTemperature: "",
+            transportTemperature: "2-8°C",
             supervisor: "",
             authorizedPerson: "",
             workers: [""],
@@ -94,10 +94,10 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
             workerSignature: "",
             treatments: [],
             bhp: {
-                sterileEquipment: false,
-                protectiveClothing: false,
-                wasteSecured: false,
-                dirtyClothesPacked: false,
+                sterileEquipment: true,
+                protectiveClothing: true,
+                wasteSecured: true,
+                dirtyClothesPacked: true,
             },
         });
 
@@ -130,10 +130,10 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
                 workers: normalizedWorkers.length ? normalizedWorkers : [""],
                 treatments: rest.treatments || [],
                 bhp: rest.bhp || {
-                    sterileEquipment: false,
-                    protectiveClothing: false,
-                    wasteSecured: false,
-                    dirtyClothesPacked: false,
+                    sterileEquipment: true,
+                    protectiveClothing: true,
+                    wasteSecured: true,
+                    dirtyClothesPacked: true,
                 },
             }));
 
