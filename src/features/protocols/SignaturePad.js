@@ -9,9 +9,10 @@ import {
     FullscreenPanel,
     FullscreenHeader,
     FullscreenCanvasBox,
+    SavedSignature,
 } from "./SignaturePad.styles";
 
-export const SignaturePad = ({ onSave, title = "Podpis" }) => {
+export const SignaturePad = ({ onSave, value = "", title = "Podpis" }) => {
     const signatureRef = useRef(null);
     const fullscreenSignatureRef = useRef(null);
 
@@ -85,6 +86,17 @@ export const SignaturePad = ({ onSave, title = "Podpis" }) => {
                     Podpisz na pełnym ekranie
                 </Button>
             </Buttons>
+
+            {value && (
+                <SavedSignature>
+                    <p>Podpis zapisany ✅</p>
+
+                    <img
+                        src={value}
+                        alt={`Zapisany ${title.toLowerCase()}`}
+                    />
+                </SavedSignature>
+            )}
 
             {isFullscreen && (
                 <FullscreenOverlay>

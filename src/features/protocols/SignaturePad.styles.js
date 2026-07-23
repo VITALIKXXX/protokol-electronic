@@ -89,3 +89,27 @@ export const FullscreenCanvasBox = styled.div`
         touch-action: none;
     }
 `;
+
+export const SavedSignature = styled.div`
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid rgba(34, 197, 94, 0.45);
+    border-radius: 12px;
+    background: rgba(34, 197, 94, 0.08);
+
+    p {
+        margin: 0 0 8px;
+        color: #22c55e;
+        font-weight: 700;
+    }
+
+    img {
+        display: block;
+        width: 100%;
+        max-width: 420px;
+        height: 100px;
+        object-fit: contain;
+        background: white;
+        border-radius: 8px;
+    }
+`;

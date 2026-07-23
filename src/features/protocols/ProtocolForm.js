@@ -651,24 +651,18 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
             <Section>
                 <SignaturePad
                     title="Podpis hodowcy lub osoby upoważnionej"
+                    value={formData.farmerSignature}
                     onSave={saveFarmerSignature}
                 />
 
-
-                {formData.farmerSignature && (
-                    <p>✅ Podpis hodowcy zapisany</p>
-                )}
 
                 <br />
 
                 <SignaturePad
                     title="Podpis technika"
+                    value={formData.workerSignature}
                     onSave={saveWorkerSignature}
                 />
-
-                {formData.workerSignature && (
-                    <p>✅ Podpis technika zapisany</p>
-                )}
 
                 {formData.signature && (
                     <p>Podpis zapisany ✅</p>
