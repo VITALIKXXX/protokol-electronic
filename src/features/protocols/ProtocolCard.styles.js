@@ -52,4 +52,11 @@ export const ActionButton = styled.button`
     background: ${({ $variant }) =>
     $variant === "danger" ? "rgba(239, 68, 68, 0.28)" : "rgba(37, 99, 235, 0.3)"};
   }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: #9ca3af;
+    color: white;
+}
 `;
