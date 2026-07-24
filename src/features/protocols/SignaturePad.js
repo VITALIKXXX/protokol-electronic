@@ -42,8 +42,10 @@ export const SignaturePad = ({ onSave, value = "", title = "Podpis" }) => {
         const originalCanvas = ref.current.getCanvas();
 
         const compressedCanvas = document.createElement("canvas");
-        compressedCanvas.width = 600;
-        compressedCanvas.height = 180;
+
+        // Do podpisu spokojnie wystarczy
+        compressedCanvas.width = 400;
+        compressedCanvas.height = 120;
 
         const context = compressedCanvas.getContext("2d");
 
@@ -65,11 +67,21 @@ export const SignaturePad = ({ onSave, value = "", title = "Podpis" }) => {
 
         const signatureImage = compressedCanvas.toDataURL(
             "image/jpeg",
-            0.65
+            0.5
+        );
+
+        console.log(
+            "Rozmiar podpisu:",
+            Math.round(signatureImage.length * 0.75 / 1024),
+            "KB"
         );
 
         onSave(signatureImage);
         setIsFullscreen(false);
+
+        setTimeout(() => {
+            signatureRef.current?.fromDataURL(signatureImage);
+        }, 0);
     };
 
     const openFullscreen = () => {

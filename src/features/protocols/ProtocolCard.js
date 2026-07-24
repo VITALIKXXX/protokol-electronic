@@ -45,8 +45,7 @@ export const ProtocolCard = ({ protocol, onEdit, onDelete }) => {
                         <ActionButton
                             type="button"
                             $variant="danger"
-                            disabled
-                            title="Funkcja dostępna tylko dla administratora"
+                             onClick={() => onDelete(protocol.id)}
                         >
                             🔒 Usuń
                         </ActionButton>
