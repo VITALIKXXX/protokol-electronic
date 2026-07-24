@@ -1,32 +1,50 @@
 import styled from "styled-components";
 
 export const LoginPageWrapper = styled.main`
-    min-height: 100vh;
+    min-height: 100dvh;
     display: grid;
     place-items: center;
-    padding: 20px;
+    padding: 16px;
+    box-sizing: border-box;
     background: #07111f;
 `;
 
 export const LoginCard = styled.section`
-    width: 100%;
-    max-width: 420px;
+    width: min(100%, 420px);
+    box-sizing: border-box;
     padding: 28px;
     border-radius: 22px;
     background: #111c2d;
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+
+    @media (max-width: 480px) {
+        padding: 22px 18px;
+        border-radius: 18px;
+    }
 `;
 
 export const LoginTitle = styled.h1`
     margin: 0;
     color: #ffffff;
-    font-size: 26px;
+    font-size: clamp(28px, 8vw, 42px);
+    line-height: 1.08;
+
+    @media (max-width: 480px) {
+        font-size: 32px;
+    }
 `;
 
 export const LoginSubtitle = styled.p`
-    margin: 8px 0 24px;
+    margin: 10px 0 24px;
     color: #94a3b8;
+    font-size: 17px;
+    line-height: 1.4;
+
+    @media (max-width: 480px) {
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
 `;
 
 export const LoginForm = styled.form`
