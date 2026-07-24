@@ -555,11 +555,13 @@ export const generateProtocolPdfV2 = (protocol) => {
     if (protocol.farmerSignature) {
         pdf.addImage(
             protocol.farmerSignature,
-            "PNG",
+            "JPEG",
             supervisorX + 7,
             signaturesY + 20,
             34,
-            14
+            14,
+            undefined,
+            "FAST"
         );
     }
 
@@ -567,11 +569,13 @@ export const generateProtocolPdfV2 = (protocol) => {
     if (protocol.workerSignature) {
         pdf.addImage(
             protocol.workerSignature,
-            "PNG",
+            "JPEG",
             farmerX + 8,
             signaturesY + 20,
             34,
-            14
+            14,
+            undefined,
+            "FAST"
         );
     }
 

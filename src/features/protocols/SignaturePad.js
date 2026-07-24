@@ -39,9 +39,34 @@ export const SignaturePad = ({ onSave, value = "", title = "Podpis" }) => {
             return;
         }
 
-        const signatureImage = ref.current
-            .getCanvas()
-            .toDataURL("image/png");
+        const originalCanvas = ref.current.getCanvas();
+
+        const compressedCanvas = document.createElement("canvas");
+        compressedCanvas.width = 600;
+        compressedCanvas.height = 180;
+
+        const context = compressedCanvas.getContext("2d");
+
+        context.fillStyle = "#ffffff";
+        context.fillRect(
+            0,
+            0,
+            compressedCanvas.width,
+            compressedCanvas.height
+        );
+
+        context.drawImage(
+            originalCanvas,
+            0,
+            0,
+            compressedCanvas.width,
+            compressedCanvas.height
+        );
+
+        const signatureImage = compressedCanvas.toDataURL(
+            "image/jpeg",
+            0.65
+        );
 
         onSave(signatureImage);
         setIsFullscreen(false);
