@@ -6,7 +6,11 @@ import { AppShell, Header, Title, Subtitle, Main, SearchWrapper, SearchIcon, Sea
 import { removeProtocol } from "../features/protocols/protocolsApi";
 import { NetworkStatus } from "../features/network/NetworkStatus";
 
-const App = () => {
+const App = ({
+  currentUser,
+  currentUserData,
+  role,
+}) => {
   const [protocols, setProtocols] = useState([]);
 
   const [selectedProtocol, setSelectedProtocol] = useState(null);
@@ -22,8 +26,16 @@ const App = () => {
   }, []);
 
   const handleDeleteProtocol = async (id) => {
-    const ok = window.confirm("Na pewno usunąć ten protokół?");
-    if (!ok) return;
+    if (role !== "admin") {
+      alert("Tylko administrator może usuwać protokoły.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Na pewno usunąć ten protokół?"
+    );
+
+    if (!confirmed) return;
 
     await removeProtocol(id);
 
@@ -56,6 +68,8 @@ const App = () => {
         <ProtocolForm
           editingProtocol={editingProtocol}
           onFinishEdit={() => setEditingProtocol(null)}
+          currentUser={currentUser}
+          currentUserData={currentUserData}
         />
         <SearchWrapper>
           <SearchIcon>🔍</SearchIcon>
@@ -70,6 +84,7 @@ const App = () => {
           protocols={filteredProtocols}
           onEdit={setEditingProtocol}
           onDelete={handleDeleteProtocol}
+          role={role}
         />
       </Main>
     </AppShell>

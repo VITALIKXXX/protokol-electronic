@@ -33,7 +33,11 @@ const emptyProduct = {
 
 const getToday = () => new Date().toISOString().slice(0, 10);
 
-export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
+export const ProtocolForm = ({
+    editingProtocol,
+    onFinishEdit,
+    currentUser,
+    currentUserData, }) => {
     const [products, setProducts] = useState([{ ...emptyProduct }]);
 
     const [formData, setFormData] = useState({
@@ -216,26 +220,62 @@ export const ProtocolForm = ({ editingProtocol, onFinishEdit }) => {
         );
     };
 
+    const getCurrentActor = () => ({
+        uid: currentUser?.uid || "",
+        email: currentUser?.email || "",
+        name:
+            currentUserData?.displayName ||
+            currentUser?.email?.split("@")[0] ||
+            "Pracownik",
+    });
+
     const handleSave = async () => {
-        const protocol = {
-            ...formData,
-            products,
-        };
+        try {
+            const actor = getCurrentActor();
 
-        if (editingProtocol?.id) {
-            await updateProtocol(editingProtocol.id, protocol);
+            const protocol = {
+                ...formData,
+                products,
+            };
+
+            if (editingProtocol?.id) {
+                await updateProtocol(
+                    editingProtocol.id,
+                    {
+                        ...protocol,
+                        updatedBy: actor,
+                    }
+                );
+
+                setSavedProtocol(protocol);
+                onFinishEdit();
+                await resetForm();
+
+                alert("Protokół zaktualizowany ✅");
+                return;
+            }
+
+            await createProtocol({
+                ...protocol,
+                createdBy: actor,
+                updatedBy: actor,
+            });
+
             setSavedProtocol(protocol);
-            onFinishEdit();
             await resetForm();
-            alert("Protokół zaktualizowany ✅");
-            return;
+
+            alert("Protokół zapisany w Firebase ✅");
+        } catch (error) {
+            console.error(
+                "Błąd zapisu protokołu:",
+                error
+            );
+
+            alert(
+                `Nie udało się zapisać protokołu: ${error.message || "nieznany błąd"
+                }`
+            );
         }
-
-        await createProtocol(protocol);
-        setSavedProtocol(protocol);
-        await resetForm();
-
-        alert("Protokół zapisany w Firebase ✅");
     };
 
 

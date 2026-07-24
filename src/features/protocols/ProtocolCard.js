@@ -9,8 +9,10 @@ import {
     ActionButton,
 } from "./ProtocolCard.styles";
 
-export const ProtocolCard = ({ protocol, onEdit, onDelete }) => {
+
+export const ProtocolCard = ({ protocol, onEdit, onDelete, role, }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const isAdmin = role === "admin";
 
     return (
         <Card onClick={() => setIsOpen((prev) => !prev)}>
@@ -33,6 +35,13 @@ export const ProtocolCard = ({ protocol, onEdit, onDelete }) => {
                         <strong>Uwagi:</strong> {protocol.notes || "-"}
                     </p>
 
+                    {protocol.createdBy?.name && (
+                        <p>
+                            <strong>Utworzył:</strong>{" "}
+                            {protocol.createdBy.name}
+                        </p>
+                    )}
+
                     <Actions>
                         <ActionButton type="button" onClick={() => generateProtocolPdfV2(protocol)}>
                             PDF
@@ -41,14 +50,21 @@ export const ProtocolCard = ({ protocol, onEdit, onDelete }) => {
                         <ActionButton type="button" onClick={() => onEdit(protocol)}>
                             Edytuj
                         </ActionButton>
-
                         <ActionButton
                             type="button"
                             $variant="danger"
-                            disabled
-                            title="Funkcja dostępna tylko dla administratora"
+                            disabled={!isAdmin}
+                            title={
+                                isAdmin
+                                    ? "Usuń protokół"
+                                    : "Funkcja dostępna tylko dla administratora"
+                            }
+                            onClick={() => {
+                                if (!isAdmin) return;
+                                onDelete(protocol.id);
+                            }}
                         >
-                            🔒 Usuń
+                            {isAdmin ? "Usuń" : "🔒 Usuń"}
                         </ActionButton>
                     </Actions>
                 </div>
