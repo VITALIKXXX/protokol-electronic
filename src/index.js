@@ -20,4 +20,12 @@ root.render(
 );
 
 
-serviceWorkerRegistration.register();
+serviceWorkerRegistration.register({
+  onUpdate: (registration) => {
+    window.dispatchEvent(
+      new CustomEvent("sw-update", {
+        detail: registration,
+      })
+    );
+  },
+});

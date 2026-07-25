@@ -5,6 +5,7 @@ import { subscribeProtocols } from "../features/protocols/protocolsApi";
 import { AppShell, Header, Title, Subtitle, Main, SearchWrapper, SearchIcon, SearchInput } from "./App.styles";
 import { removeProtocol } from "../features/protocols/protocolsApi";
 import { NetworkStatus } from "../features/network/NetworkStatus";
+import { AppUpdateBanner } from "../features/update/AppUpdateBanner";
 
 const App = ({
   currentUser,
@@ -57,38 +58,42 @@ const App = ({
   });
 
   return (
-    <AppShell>
-      <Header>
-        <Title>Protokół elektroniczny</Title>
-        <Subtitle>Formularz wykonania usługi</Subtitle>
-        <NetworkStatus />
-      </Header>
+    <>
+      <AppUpdateBanner />
+      <AppShell>
+        <Header>
+          <Title>Protokół elektroniczny</Title>
+          <Subtitle>Formularz wykonania usługi</Subtitle>
+          <NetworkStatus />
+        </Header>
 
-      <Main>
-        <ProtocolForm
-          editingProtocol={editingProtocol}
-          onFinishEdit={() => setEditingProtocol(null)}
-          currentUser={currentUser}
-          currentUserData={currentUserData}
-        />
-        <SearchWrapper>
-          <SearchIcon>🔍</SearchIcon>
-
-          <SearchInput
-            placeholder="Szukaj protokołu..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+        <Main>
+          <ProtocolForm
+            editingProtocol={editingProtocol}
+            onFinishEdit={() => setEditingProtocol(null)}
+            currentUser={currentUser}
+            currentUserData={currentUserData}
           />
-        </SearchWrapper>
-        <ProtocolList
-          protocols={filteredProtocols}
-          onEdit={setEditingProtocol}
-          onDelete={handleDeleteProtocol}
-          role={role}
-        />
-      </Main>
-    </AppShell>
+          <SearchWrapper>
+            <SearchIcon>🔍</SearchIcon>
+
+            <SearchInput
+              placeholder="Szukaj protokołu..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </SearchWrapper>
+          <ProtocolList
+            protocols={filteredProtocols}
+            onEdit={setEditingProtocol}
+            onDelete={handleDeleteProtocol}
+            role={role}
+          />
+        </Main>
+      </AppShell>
+    </>
   );
 };
+
 
 export default App;
