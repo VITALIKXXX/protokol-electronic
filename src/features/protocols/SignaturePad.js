@@ -29,6 +29,16 @@ export const SignaturePad = ({ onSave, value = "", title = "Podpis" }) => {
         };
     }, [isFullscreen]);
 
+    useEffect(() => {
+        if (!value) {
+            signatureRef.current?.clear();
+            fullscreenSignatureRef.current?.clear();
+            return;
+        }
+
+        signatureRef.current?.fromDataURL(value);
+    }, [value]);
+
     const clearSignature = (ref) => {
         ref.current?.clear();
     };
