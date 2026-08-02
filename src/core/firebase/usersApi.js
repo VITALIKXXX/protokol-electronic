@@ -1,6 +1,7 @@
 import {
     doc,
     getDoc,
+    getDocFromCache,
     setDoc,
     serverTimestamp,
 } from "firebase/firestore";
@@ -11,19 +12,26 @@ export const ensureUserDoc = async ({ uid, email }) => {
     const userSnapshot = await getDoc(userRef);
 
     if (userSnapshot.exists()) {
-        return userSnapshot.data();
+        return {
+            uid: userSnapshot.id,
+            ...userSnapshot.data(),
+        };
     }
 
     const newUserData = {
         email: email || "",
-        displayName: email?.split("@")[0] || "Pracownik",
+        displayName:
+            email?.split("@")[0] || "Pracownik",
         role: "worker",
         createdAt: serverTimestamp(),
     };
 
     await setDoc(userRef, newUserData);
 
-    return newUserData;
+    return {
+        uid,
+        ...newUserData,
+    };
 };
 
 export const getMyUserData = async (uid) => {
@@ -38,4 +46,29 @@ export const getMyUserData = async (uid) => {
         uid: userSnapshot.id,
         ...userSnapshot.data(),
     };
+};
+
+export const getMyUserDataFromCache = async (uid) => {
+    const userRef = doc(db, "users", uid);
+
+    try {
+        const userSnapshot =
+            await getDocFromCache(userRef);
+
+        if (!userSnapshot.exists()) {
+            return null;
+        }
+
+        return {
+            uid: userSnapshot.id,
+            ...userSnapshot.data(),
+        };
+    } catch (error) {
+        console.warn(
+            "Profil użytkownika nie jest zapisany w cache:",
+            error
+        );
+
+        return null;
+    }
 };

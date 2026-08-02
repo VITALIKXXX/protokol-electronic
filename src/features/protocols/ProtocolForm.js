@@ -72,40 +72,62 @@ export const ProtocolForm = ({
     });
 
     const resetForm = async () => {
-        const nextProtocolNumber = await getNextProtocolNumber();
+        const clearForm = (nextProtocolNumber = "") => {
+            setFormData({
+                protocolNumber: nextProtocolNumber,
+                orderDate: getToday(),
+                orderTime: "",
+                orderingPerson: "",
+                executionDate: getToday(),
+                startTime: "",
+                endTime: "",
+                breeder: "",
+                city: "",
+                building: "",
+                animalAge: "",
+                animalType: "",
+                animalCount: "",
+                notes: "",
+                dateChangeReason: "",
+                transportTemperature: "2-8°C",
+                supervisor: "",
+                authorizedPerson: "",
+                workers: [""],
+                farmerSignature: "",
+                workerSignature: "",
+                treatments: [],
+                bhp: {
+                    sterileEquipment: true,
+                    protectiveClothing: true,
+                    wasteSecured: true,
+                    dirtyClothesPacked: true,
+                },
+            });
 
-        setFormData({
-            protocolNumber: nextProtocolNumber,
-            orderDate: getToday(),
-            orderTime: "",
-            orderingPerson: "",
-            executionDate: getToday(),
-            startTime: "",
-            endTime: "",
-            breeder: "",
-            city: "",
-            building: "",
-            animalAge: "",
-            animalType: "",
-            animalCount: "",
-            notes: "",
-            dateChangeReason: "",
-            transportTemperature: "2-8°C",
-            supervisor: "",
-            authorizedPerson: "",
-            workers: [""],
-            farmerSignature: "",
-            workerSignature: "",
-            treatments: [],
-            bhp: {
-                sterileEquipment: true,
-                protectiveClothing: true,
-                wasteSecured: true,
-                dirtyClothesPacked: true,
-            },
-        });
+            setProducts([{ ...emptyProduct }]);
+        };
 
-        setProducts([{ ...emptyProduct }]);
+        // Najpierw czyścimy formularz — niezależnie od internetu.
+        clearForm("");
+
+        // Numer pobieramy tylko wtedy, kiedy telefon jest online.
+        if (!navigator.onLine) {
+            return;
+        }
+
+        try {
+            const nextProtocolNumber = await getNextProtocolNumber();
+
+            setFormData((prev) => ({
+                ...prev,
+                protocolNumber: nextProtocolNumber,
+            }));
+        } catch (error) {
+            console.warn(
+                "Nie udało się pobrać kolejnego numeru protokołu:",
+                error
+            );
+        }
     };
 
     const [savedProtocol, setSavedProtocol] = useState(null);

@@ -7,6 +7,7 @@ import { auth } from "../../core/firebase/firebaseApp.js";
 import {
     ensureUserDoc,
     getMyUserData,
+    getMyUserDataFromCache,
 } from "../../core/firebase/usersApi.js";
 import { LoginPage } from "./LoginPage.js";
 import {
@@ -26,13 +27,36 @@ export const AuthGate = ({ children }) => {
         const unsubscribe = onAuthStateChanged(
             auth,
             async (firebaseUser) => {
-                try {
-                    setError("");
-                    setUser(firebaseUser);
+                setLoading(true);
+                setError("");
+                setUser(firebaseUser);
 
-                    if (!firebaseUser) {
-                        setUserData(null);
-                        setLoading(false);
+                if (!firebaseUser) {
+                    setUserData(null);
+                    setLoading(false);
+                    return;
+                }
+
+                try {
+                    if (!navigator.onLine) {
+                        const cachedUserData =
+                            await getMyUserDataFromCache(
+                                firebaseUser.uid
+                            );
+
+                        setUserData(
+                            cachedUserData || {
+                                uid: firebaseUser.uid,
+                                email:
+                                    firebaseUser.email || "",
+                                displayName:
+                                    firebaseUser.email
+                                        ?.split("@")[0] ||
+                                    "Pracownik",
+                                role: "worker",
+                            }
+                        );
+
                         return;
                     }
 
@@ -42,18 +66,47 @@ export const AuthGate = ({ children }) => {
                     });
 
                     const loadedUserData =
-                        await getMyUserData(firebaseUser.uid);
+                        await getMyUserData(
+                            firebaseUser.uid
+                        );
 
-                    setUserData(loadedUserData);
+                    setUserData(
+                        loadedUserData || {
+                            uid: firebaseUser.uid,
+                            email:
+                                firebaseUser.email || "",
+                            displayName:
+                                firebaseUser.email
+                                    ?.split("@")[0] ||
+                                "Pracownik",
+                            role: "worker",
+                        }
+                    );
                 } catch (authError) {
                     console.error(
                         "Błąd pobierania użytkownika:",
                         authError
                     );
 
-                    setError(
-                        "Nie udało się pobrać profilu użytkownika."
-                    );
+                    const cachedUserData =
+                        await getMyUserDataFromCache(
+                            firebaseUser.uid
+                        );
+
+                    if (cachedUserData) {
+                        setUserData(cachedUserData);
+                    } else {
+                        setUserData({
+                            uid: firebaseUser.uid,
+                            email:
+                                firebaseUser.email || "",
+                            displayName:
+                                firebaseUser.email
+                                    ?.split("@")[0] ||
+                                "Pracownik",
+                            role: "worker",
+                        });
+                    }
                 } finally {
                     setLoading(false);
                 }
