@@ -7,9 +7,6 @@ import {
     doc,
     updateDoc,
     getDocs,
-    query,
-    orderBy,
-    limit,
 } from "firebase/firestore";
 
 import { db } from "../../core/firebase/firebaseApp.js";
