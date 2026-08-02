@@ -7,6 +7,9 @@ import {
     doc,
     updateDoc,
     getDocs,
+    query,
+    orderBy,
+    limit,
 } from "firebase/firestore";
 
 import { db } from "../../core/firebase/firebaseApp.js";
@@ -48,8 +51,28 @@ export const updateProtocol = async (id, protocol) => {
 
 export const getNextProtocolNumber = async () => {
     const snapshot = await getDocs(protocolsCollection);
-    const nextNumber = snapshot.size + 1;
-    const year = new Date().getFullYear();
+    const currentYear = String(new Date().getFullYear());
 
-    return `${String(nextNumber).padStart(3, "0")}/${year}`;
+    let highestNumber = 0;
+
+    snapshot.forEach((document) => {
+        const protocol = document.data();
+        const [numberPart, yearPart] = String(
+            protocol.protocolNumber || ""
+        ).split("/");
+
+        if (yearPart !== currentYear) {
+            return;
+        }
+
+        const number = Number(numberPart);
+
+        if (Number.isFinite(number) && number > highestNumber) {
+            highestNumber = number;
+        }
+    });
+
+    const nextNumber = highestNumber + 1;
+
+    return `${String(nextNumber).padStart(3, "0")}/${currentYear}`;
 };

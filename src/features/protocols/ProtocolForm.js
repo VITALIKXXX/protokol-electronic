@@ -71,7 +71,7 @@ export const ProtocolForm = ({
         },
     });
 
-    const resetForm = async () => {
+    const resetForm = async (forcedNextNumber = "") => {
         const clearForm = (nextProtocolNumber = "") => {
             setFormData({
                 protocolNumber: nextProtocolNumber,
@@ -108,10 +108,9 @@ export const ProtocolForm = ({
         };
 
         // Najpierw czyścimy formularz — niezależnie od internetu.
-        clearForm("");
+        clearForm(forcedNextNumber);
 
-        // Numer pobieramy tylko wtedy, kiedy telefon jest online.
-        if (!navigator.onLine) {
+        if (forcedNextNumber || !navigator.onLine) {
             return;
         }
 
@@ -251,6 +250,20 @@ export const ProtocolForm = ({
             "Pracownik",
     });
 
+    const getNextLocalProtocolNumber = (currentNumber) => {
+        const [numberPart, yearPart] = String(
+            currentNumber || ""
+        ).split("/");
+
+        const currentNumberValue = Number(numberPart) || 0;
+        const year = yearPart || new Date().getFullYear();
+
+        return `${String(currentNumberValue + 1).padStart(
+            3,
+            "0"
+        )}/${year}`;
+    };
+
     const handleSave = async () => {
         try {
             const actor = getCurrentActor();
@@ -261,13 +274,36 @@ export const ProtocolForm = ({
             };
 
             if (editingProtocol?.id) {
-                await updateProtocol(
-                    editingProtocol.id,
-                    {
+                if (!navigator.onLine) {
+                    updateProtocol(editingProtocol.id, {
                         ...protocol,
                         updatedBy: actor,
-                    }
-                );
+                    }).catch((error) => {
+                        console.error(
+                            "Błąd synchronizacji edytowanego protokołu:",
+                            error
+                        );
+                    });
+
+                    setSavedProtocol(protocol);
+                    onFinishEdit();
+                    await resetForm(
+                        getNextLocalProtocolNumber(
+                            formData.protocolNumber
+                        )
+                    );
+
+                    alert(
+                        "Protokół zapisany lokalnie ✅ Zostanie zsynchronizowany po odzyskaniu internetu."
+                    );
+
+                    return;
+                }
+
+                await updateProtocol(editingProtocol.id, {
+                    ...protocol,
+                    updatedBy: actor,
+                });
 
                 setSavedProtocol(protocol);
                 onFinishEdit();
@@ -277,11 +313,38 @@ export const ProtocolForm = ({
                 return;
             }
 
-            await createProtocol({
+            const protocolToSave = {
                 ...protocol,
                 createdBy: actor,
                 updatedBy: actor,
-            });
+            };
+
+            if (!navigator.onLine) {
+                // Uruchamiamy zapis do lokalnej kolejki Firestore,
+                // ale nie czekamy na potwierdzenie serwera.
+                createProtocol(protocolToSave).catch((error) => {
+                    console.error(
+                        "Błąd synchronizacji protokołu:",
+                        error
+                    );
+                });
+
+                const nextLocalNumber =
+                    getNextLocalProtocolNumber(
+                        formData.protocolNumber
+                    );
+
+                setSavedProtocol(protocol);
+                await resetForm(nextLocalNumber);
+
+                alert(
+                    "Protokół zapisany lokalnie ✅ Zostanie wysłany po odzyskaniu internetu."
+                );
+
+                return;
+            }
+
+            await createProtocol(protocolToSave);
 
             setSavedProtocol(protocol);
             await resetForm();
