@@ -1,11 +1,28 @@
 import { useEffect, useState } from "react";
+
 import { ProtocolForm } from "../features/protocols/ProtocolForm";
 import { ProtocolList } from "../features/protocols/ProtocolList";
-import { subscribeProtocols } from "../features/protocols/protocolsApi";
-import { AppShell, Header, Title, Subtitle, Main, SearchWrapper, SearchIcon, SearchInput } from "./App.styles";
-import { removeProtocol } from "../features/protocols/protocolsApi";
+
+import {
+  subscribeProtocols,
+  removeProtocol,
+  finalizePendingProtocolNumbers,
+} from "../features/protocols/protocolsApi";
+
+import {
+  AppShell,
+  Header,
+  Title,
+  Subtitle,
+  Main,
+  SearchWrapper,
+  SearchIcon,
+  SearchInput,
+} from "./App.styles";
+
 import { NetworkStatus } from "../features/network/NetworkStatus";
 import { AppUpdateBanner } from "../features/update/AppUpdateBanner";
+
 
 const App = ({
   currentUser,
@@ -20,15 +37,79 @@ const App = ({
 
   const [search, setSearch] = useState("");
 
+
+  // =====================================================
+  // NASŁUCHIWANIE PROTOKOŁÓW
+  // =====================================================
+
   useEffect(() => {
     const unsubscribe = subscribeProtocols(setProtocols);
 
     return () => unsubscribe();
   }, []);
 
+
+  // =====================================================
+  // SYNCHRONIZACJA NUMERÓW PROTOKOŁÓW
+  //
+  // Jeżeli protokół został utworzony offline,
+  // posiada numer TEMP-...
+  //
+  // Kiedy internet wróci, aplikacja automatycznie
+  // nada mu właściwy numer, np. 047/2026.
+  // =====================================================
+
+  useEffect(() => {
+    const synchronizeProtocolNumbers = async () => {
+      if (!navigator.onLine) {
+        return;
+      }
+
+      try {
+        await finalizePendingProtocolNumbers();
+
+        console.log(
+          "Synchronizacja numerów protokołów zakończona."
+        );
+      } catch (error) {
+        console.error(
+          "Błąd synchronizacji numerów protokołów:",
+          error
+        );
+      }
+    };
+
+
+    // Sprawdzamy przy uruchomieniu aplikacji.
+    synchronizeProtocolNumbers();
+
+
+    // Sprawdzamy ponownie, kiedy telefon odzyska internet.
+    window.addEventListener(
+      "online",
+      synchronizeProtocolNumbers
+    );
+
+
+    return () => {
+      window.removeEventListener(
+        "online",
+        synchronizeProtocolNumbers
+      );
+    };
+  }, []);
+
+
+  // =====================================================
+  // USUWANIE PROTOKOŁU
+  // =====================================================
+
   const handleDeleteProtocol = async (id) => {
     if (role !== "admin") {
-      alert("Tylko administrator może usuwać protokoły.");
+      alert(
+        "Tylko administrator może usuwać protokoły."
+      );
+
       return;
     }
 
@@ -36,53 +117,110 @@ const App = ({
       "Na pewno usunąć ten protokół?"
     );
 
-    if (!confirmed) return;
+    if (!confirmed) {
+      return;
+    }
 
-    await removeProtocol(id);
+    try {
+      await removeProtocol(id);
 
-    if (selectedProtocol?.id === id) {
-      setSelectedProtocol(null);
+      if (selectedProtocol?.id === id) {
+        setSelectedProtocol(null);
+      }
+    } catch (error) {
+      console.error(
+        "Błąd usuwania protokołu:",
+        error
+      );
+
+      alert(
+        "Nie udało się usunąć protokołu."
+      );
     }
   };
 
-  const filteredProtocols = protocols.filter((protocol) => {
-    const q = search.trim().toLowerCase();
 
-    if (!q) return true;
+  // =====================================================
+  // WYSZUKIWANIE
+  // =====================================================
 
-    return (
-      String(protocol.protocolNumber || "").toLowerCase().includes(q) ||
-      String(protocol.breeder || "").toLowerCase().includes(q) ||
-      String(protocol.executionDate || "").toLowerCase().includes(q)
-    );
-  });
+  const filteredProtocols = protocols.filter(
+    (protocol) => {
+      const q = search
+        .trim()
+        .toLowerCase();
+
+      if (!q) {
+        return true;
+      }
+
+      return (
+        String(
+          protocol.protocolNumber || ""
+        )
+          .toLowerCase()
+          .includes(q) ||
+
+        String(
+          protocol.breeder || ""
+        )
+          .toLowerCase()
+          .includes(q) ||
+
+        String(
+          protocol.executionDate || ""
+        )
+          .toLowerCase()
+          .includes(q)
+      );
+    }
+  );
+
 
   return (
     <>
       <AppUpdateBanner />
+
       <AppShell>
         <Header>
-          <Title>Protokół elektroniczny</Title>
-          <Subtitle>Formularz wykonania usługi</Subtitle>
+          <Title>
+            Protokół elektroniczny
+          </Title>
+
+          <Subtitle>
+            Formularz wykonania usługi
+          </Subtitle>
+
           <NetworkStatus />
         </Header>
+
 
         <Main>
           <ProtocolForm
             editingProtocol={editingProtocol}
-            onFinishEdit={() => setEditingProtocol(null)}
+            onFinishEdit={() =>
+              setEditingProtocol(null)
+            }
             currentUser={currentUser}
             currentUserData={currentUserData}
           />
+
+
           <SearchWrapper>
-            <SearchIcon>🔍</SearchIcon>
+            <SearchIcon>
+              🔍
+            </SearchIcon>
 
             <SearchInput
               placeholder="Szukaj protokołu..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(event) =>
+                setSearch(event.target.value)
+              }
             />
           </SearchWrapper>
+
+
           <ProtocolList
             protocols={filteredProtocols}
             onEdit={setEditingProtocol}

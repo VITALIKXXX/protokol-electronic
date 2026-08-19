@@ -5,11 +5,27 @@ import {
     setDoc,
     serverTimestamp,
 } from "firebase/firestore";
+
 import { db } from "./firebaseApp.js";
 
-export const ensureUserDoc = async ({ uid, email }) => {
-    const userRef = doc(db, "users", uid);
-    const userSnapshot = await getDoc(userRef);
+
+// ======================================================
+// UPEWNIJ SIĘ, ŻE UŻYTKOWNIK MA DOKUMENT W FIRESTORE
+// ======================================================
+
+export const ensureUserDoc = async ({
+    uid,
+    email,
+}) => {
+    const userRef = doc(
+        db,
+        "users",
+        uid
+    );
+
+    const userSnapshot =
+        await getDoc(userRef);
+
 
     if (userSnapshot.exists()) {
         return {
@@ -18,15 +34,26 @@ export const ensureUserDoc = async ({ uid, email }) => {
         };
     }
 
+
     const newUserData = {
         email: email || "",
+
         displayName:
-            email?.split("@")[0] || "Pracownik",
+            email?.split("@")[0] ||
+            "Pracownik",
+
         role: "worker",
-        createdAt: serverTimestamp(),
+
+        createdAt:
+            serverTimestamp(),
     };
 
-    await setDoc(userRef, newUserData);
+
+    await setDoc(
+        userRef,
+        newUserData
+    );
+
 
     return {
         uid,
@@ -34,13 +61,28 @@ export const ensureUserDoc = async ({ uid, email }) => {
     };
 };
 
-export const getMyUserData = async (uid) => {
-    const userRef = doc(db, "users", uid);
-    const userSnapshot = await getDoc(userRef);
+
+// ======================================================
+// POBIERANIE UŻYTKOWNIKA ONLINE
+// ======================================================
+
+export const getMyUserData = async (
+    uid
+) => {
+    const userRef = doc(
+        db,
+        "users",
+        uid
+    );
+
+    const userSnapshot =
+        await getDoc(userRef);
+
 
     if (!userSnapshot.exists()) {
         return null;
     }
+
 
     return {
         uid: userSnapshot.id,
@@ -48,27 +90,44 @@ export const getMyUserData = async (uid) => {
     };
 };
 
-export const getMyUserDataFromCache = async (uid) => {
-    const userRef = doc(db, "users", uid);
 
-    try {
-        const userSnapshot =
-            await getDocFromCache(userRef);
+// ======================================================
+// POBIERANIE UŻYTKOWNIKA Z CACHE FIRESTORE
+// ======================================================
 
-        if (!userSnapshot.exists()) {
-            return null;
-        }
-
-        return {
-            uid: userSnapshot.id,
-            ...userSnapshot.data(),
-        };
-    } catch (error) {
-        console.warn(
-            "Profil użytkownika nie jest zapisany w cache:",
-            error
+export const getMyUserDataFromCache =
+    async (uid) => {
+        const userRef = doc(
+            db,
+            "users",
+            uid
         );
 
-        return null;
-    }
-};
+
+        try {
+            const userSnapshot =
+                await getDocFromCache(
+                    userRef
+                );
+
+
+            if (!userSnapshot.exists()) {
+                return null;
+            }
+
+
+            return {
+                uid: userSnapshot.id,
+                ...userSnapshot.data(),
+            };
+
+        } catch (error) {
+            console.warn(
+                "Profil użytkownika nie jest zapisany w cache:",
+                error
+            );
+
+
+            return null;
+        }
+    };

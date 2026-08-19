@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { SignaturePad } from "./SignaturePad";
+
 import {
     createProtocol,
     updateProtocol,
-    getNextProtocolNumber,
+    generateTemporaryProtocolNumber,
+    finalizeProtocolNumber,
 } from "./protocolsApi";
+
 import {
     Card,
     Section,
@@ -22,6 +25,7 @@ import {
     ButtonsRow,
 } from "./ProtocolForm.styles";
 
+
 const emptyProduct = {
     documentNumber: "",
     name: "",
@@ -31,375 +35,727 @@ const emptyProduct = {
     dosage: "",
 };
 
-const getToday = () => new Date().toISOString().slice(0, 10);
+
+const getToday = () =>
+    new Date().toISOString().slice(0, 10);
+
 
 export const ProtocolForm = ({
     editingProtocol,
     onFinishEdit,
     currentUser,
-    currentUserData, }) => {
-    const [products, setProducts] = useState([{ ...emptyProduct }]);
+    currentUserData,
+}) => {
+
+    const [products, setProducts] = useState([
+        { ...emptyProduct },
+    ]);
+
 
     const [formData, setFormData] = useState({
-        protocolNumber: "",
+
+        protocolNumber:
+            generateTemporaryProtocolNumber(),
+
         orderDate: getToday(),
+
         orderTime: "",
+
         orderingPerson: "",
+
         executionDate: getToday(),
+
         startTime: "",
+
         endTime: "",
+
         breeder: "",
+
         city: "",
+
         building: "",
+
         animalAge: "",
+
         animalType: "",
+
         animalCount: "",
+
         notes: "",
+
         dateChangeReason: "",
+
         transportTemperature: "2-8°C",
+
         supervisor: "",
+
         authorizedPerson: "",
+
         workers: [""],
+
         treatments: [],
+
         farmerSignature: "",
+
         workerSignature: "",
+
         bhp: {
+
             sterileEquipment: true,
+
             protectiveClothing: true,
+
             wasteSecured: true,
+
             dirtyClothesPacked: true,
         },
     });
 
-    const resetForm = async (forcedNextNumber = "") => {
-        const clearForm = (nextProtocolNumber = "") => {
-            setFormData({
-                protocolNumber: nextProtocolNumber,
-                orderDate: getToday(),
-                orderTime: "",
-                orderingPerson: "",
-                executionDate: getToday(),
-                startTime: "",
-                endTime: "",
-                breeder: "",
-                city: "",
-                building: "",
-                animalAge: "",
-                animalType: "",
-                animalCount: "",
-                notes: "",
-                dateChangeReason: "",
-                transportTemperature: "2-8°C",
-                supervisor: "",
-                authorizedPerson: "",
-                workers: [""],
-                farmerSignature: "",
-                workerSignature: "",
-                treatments: [],
-                bhp: {
-                    sterileEquipment: true,
-                    protectiveClothing: true,
-                    wasteSecured: true,
-                    dirtyClothesPacked: true,
-                },
-            });
 
-            setProducts([{ ...emptyProduct }]);
-        };
+    const [savedProtocol, setSavedProtocol] =
+        useState(null);
 
-        // Najpierw czyścimy formularz — niezależnie od internetu.
-        clearForm(forcedNextNumber);
 
-        if (forcedNextNumber || !navigator.onLine) {
-            return;
-        }
+    // =====================================================
+    // RESET FORMULARZA
+    //
+    // WAŻNE:
+    // Ta funkcja NIE komunikuje się z Firebase.
+    //
+    // Dzięki temu działa natychmiast również offline.
+    // =====================================================
 
-        try {
-            const nextProtocolNumber = await getNextProtocolNumber();
+    const resetForm = () => {
 
-            setFormData((prev) => ({
-                ...prev,
-                protocolNumber: nextProtocolNumber,
-            }));
-        } catch (error) {
-            console.warn(
-                "Nie udało się pobrać kolejnego numeru protokołu:",
-                error
-            );
-        }
+        setFormData({
+
+            protocolNumber:
+                generateTemporaryProtocolNumber(),
+
+            orderDate: getToday(),
+
+            orderTime: "",
+
+            orderingPerson: "",
+
+            executionDate: getToday(),
+
+            startTime: "",
+
+            endTime: "",
+
+            breeder: "",
+
+            city: "",
+
+            building: "",
+
+            animalAge: "",
+
+            animalType: "",
+
+            animalCount: "",
+
+            notes: "",
+
+            dateChangeReason: "",
+
+            transportTemperature: "2-8°C",
+
+            supervisor: "",
+
+            authorizedPerson: "",
+
+            workers: [""],
+
+            treatments: [],
+
+            farmerSignature: "",
+
+            workerSignature: "",
+
+            bhp: {
+
+                sterileEquipment: true,
+
+                protectiveClothing: true,
+
+                wasteSecured: true,
+
+                dirtyClothesPacked: true,
+            },
+        });
+
+
+        setProducts([
+            { ...emptyProduct },
+        ]);
     };
 
-    const [savedProtocol, setSavedProtocol] = useState(null);
+
+    // =====================================================
+    // EDYCJA PROTOKOŁU
+    // =====================================================
 
     useEffect(() => {
+
         if (editingProtocol) {
+
             const {
+
                 products: editedProducts = [],
+
                 id,
+
                 createdAt,
+
                 createdAtMs,
+
                 updatedAtMs,
+
                 ...rest
+
             } = editingProtocol;
 
-            const normalizedWorkers = Array.isArray(rest.workers)
-                ? rest.workers
-                : String(rest.workers || "")
-                    .split(",")
-                    .map((worker) => worker.trim())
-                    .filter(Boolean);
+
+            const normalizedWorkers =
+                Array.isArray(rest.workers)
+
+                    ? rest.workers
+
+                    : String(rest.workers || "")
+
+                        .split(",")
+
+                        .map((worker) =>
+                            worker.trim()
+                        )
+
+                        .filter(Boolean);
+
 
             setFormData((prev) => ({
+
                 ...prev,
+
                 ...rest,
-                workers: normalizedWorkers.length ? normalizedWorkers : [""],
-                treatments: rest.treatments || [],
-                bhp: rest.bhp || {
-                    sterileEquipment: true,
-                    protectiveClothing: true,
-                    wasteSecured: true,
-                    dirtyClothesPacked: true,
-                },
+
+                workers:
+                    normalizedWorkers.length
+
+                        ? normalizedWorkers
+
+                        : [""],
+
+                treatments:
+                    rest.treatments || [],
+
+                bhp:
+                    rest.bhp || {
+
+                        sterileEquipment: true,
+
+                        protectiveClothing: true,
+
+                        wasteSecured: true,
+
+                        dirtyClothesPacked: true,
+                    },
             }));
 
+
             setProducts(
+
                 editedProducts.length
+
                     ? editedProducts
+
                     : [{ ...emptyProduct }]
             );
 
+
             window.scrollTo({
+
                 top: 0,
+
                 behavior: "smooth",
             });
+
 
             return;
         }
 
-        const setNextNumber = async () => {
-            const nextProtocolNumber = await getNextProtocolNumber();
 
-            setFormData((prev) => ({
-                ...prev,
-                protocolNumber:
-                    prev.protocolNumber || nextProtocolNumber,
-            }));
-        };
+        // Jeśli nie edytujemy starego protokołu,
+        // upewniamy się, że formularz ma numer TEMP.
 
-        setNextNumber();
+        setFormData((prev) => ({
+
+            ...prev,
+
+            protocolNumber:
+                prev.protocolNumber ||
+                generateTemporaryProtocolNumber(),
+        }));
+
     }, [editingProtocol]);
 
 
-    const updateField = (field) => (event) => {
-        setFormData((prev) => ({
-            ...prev,
-            [field]: event.target.value,
-        }));
-    };
+    // =====================================================
+    // POLA FORMULARZA
+    // =====================================================
 
-    const toggleTreatment = (treatment) => (event) => {
-        setFormData((prev) => {
-            const checked = event.target.checked;
+    const updateField =
+        (field) => (event) => {
 
-            return {
+            setFormData((prev) => ({
+
                 ...prev,
-                treatments: checked
-                    ? [...prev.treatments, treatment]
-                    : prev.treatments.filter((item) => item !== treatment),
-            };
-        });
-    };
 
-    const toggleBhp = (field) => (event) => {
-        setFormData((prev) => ({
-            ...prev,
-            bhp: {
-                ...prev.bhp,
-                [field]: event.target.checked,
-            },
-        }));
-    };
+                [field]: event.target.value,
+            }));
+        };
+
+
+    // =====================================================
+    // RODZAJE ZABIEGÓW
+    // =====================================================
+
+    const toggleTreatment =
+        (treatment) => (event) => {
+
+            setFormData((prev) => {
+
+                const checked =
+                    event.target.checked;
+
+
+                return {
+
+                    ...prev,
+
+                    treatments: checked
+
+                        ? [
+                            ...prev.treatments,
+                            treatment,
+                        ]
+
+                        : prev.treatments.filter(
+                            (item) =>
+                                item !== treatment
+                        ),
+                };
+            });
+        };
+
+
+    // =====================================================
+    // BHP
+    // =====================================================
+
+    const toggleBhp =
+        (field) => (event) => {
+
+            setFormData((prev) => ({
+
+                ...prev,
+
+                bhp: {
+
+                    ...prev.bhp,
+
+                    [field]:
+                        event.target.checked,
+                },
+            }));
+        };
+
+
+    // =====================================================
+    // PREPARATY
+    // =====================================================
 
     const addProduct = () => {
-        setProducts((prev) => [...prev, { ...emptyProduct }]);
+
+        setProducts((prev) => [
+
+            ...prev,
+
+            { ...emptyProduct },
+        ]);
     };
 
-    const removeProduct = (indexToRemove) => {
-        setProducts((prev) => prev.filter((_, index) => index !== indexToRemove));
-    };
 
-    const updateProduct = (index, field) => (event) => {
-        setProducts((prev) =>
-            prev.map((product, productIndex) =>
-                productIndex === index
-                    ? {
-                        ...product,
-                        [field]: event.target.value,
-                    }
-                    : product
-            )
-        );
-    };
+    const removeProduct =
+        (indexToRemove) => {
+
+            setProducts((prev) =>
+
+                prev.filter(
+                    (_, index) =>
+                        index !== indexToRemove
+                )
+            );
+        };
+
+
+    const updateProduct =
+        (index, field) => (event) => {
+
+            setProducts((prev) =>
+
+                prev.map(
+                    (
+                        product,
+                        productIndex
+                    ) =>
+
+                        productIndex === index
+
+                            ? {
+
+                                ...product,
+
+                                [field]:
+                                    event.target.value,
+                            }
+
+                            : product
+                )
+            );
+        };
+
+
+    // =====================================================
+    // KTO UTWORZYŁ / EDYTOWAŁ PROTOKÓŁ
+    // =====================================================
 
     const getCurrentActor = () => ({
-        uid: currentUser?.uid || "",
-        email: currentUser?.email || "",
+
+        uid:
+            currentUser?.uid || "",
+
+        email:
+            currentUser?.email || "",
+
         name:
+
             currentUserData?.displayName ||
+
             currentUser?.email?.split("@")[0] ||
+
             "Pracownik",
     });
 
-    const getNextLocalProtocolNumber = (currentNumber) => {
-        const [numberPart, yearPart] = String(
-            currentNumber || ""
-        ).split("/");
 
-        const currentNumberValue = Number(numberPart) || 0;
-        const year = yearPart || new Date().getFullYear();
-
-        return `${String(currentNumberValue + 1).padStart(
-            3,
-            "0"
-        )}/${year}`;
-    };
+    // =====================================================
+    // ZAPIS PROTOKOŁU
+    // =====================================================
 
     const handleSave = async () => {
+
         try {
-            const actor = getCurrentActor();
+
+            const actor =
+                getCurrentActor();
+
 
             const protocol = {
+
                 ...formData,
+
                 products,
             };
 
+
+            // =================================================
+            // EDYCJA ISTNIEJĄCEGO PROTOKOŁU
+            // =================================================
+
             if (editingProtocol?.id) {
-                if (!navigator.onLine) {
-                    updateProtocol(editingProtocol.id, {
-                        ...protocol,
-                        updatedBy: actor,
-                    }).catch((error) => {
+
+                const updateData = {
+
+                    ...protocol,
+
+                    updatedBy: actor,
+                };
+
+
+                if (navigator.onLine) {
+
+                    await updateProtocol(
+                        editingProtocol.id,
+                        updateData
+                    );
+
+                } else {
+
+                    // Firestore zapisze zmianę lokalnie.
+                    // Po odzyskaniu internetu ją zsynchronizuje.
+
+                    updateProtocol(
+                        editingProtocol.id,
+                        updateData
+                    ).catch((error) => {
+
                         console.error(
                             "Błąd synchronizacji edytowanego protokołu:",
                             error
                         );
                     });
-
-                    setSavedProtocol(protocol);
-                    onFinishEdit();
-                    await resetForm(
-                        getNextLocalProtocolNumber(
-                            formData.protocolNumber
-                        )
-                    );
-
-                    alert(
-                        "Protokół zapisany lokalnie ✅ Zostanie zsynchronizowany po odzyskaniu internetu."
-                    );
-
-                    return;
                 }
 
-                await updateProtocol(editingProtocol.id, {
-                    ...protocol,
-                    updatedBy: actor,
-                });
 
                 setSavedProtocol(protocol);
-                onFinishEdit();
-                await resetForm();
 
-                alert("Protokół zaktualizowany ✅");
+
+                onFinishEdit();
+
+
+                // Czyścimy formularz natychmiast.
+                resetForm();
+
+
+                alert(
+
+                    navigator.onLine
+
+                        ? "Protokół zaktualizowany ✅"
+
+                        : "Zmiany zapisane offline ✅ Zostaną zsynchronizowane po odzyskaniu internetu."
+                );
+
+
                 return;
             }
 
+
+            // =================================================
+            // NOWY PROTOKÓŁ
+            // =================================================
+
             const protocolToSave = {
+
                 ...protocol,
+
                 createdBy: actor,
+
                 updatedBy: actor,
             };
 
+
+            // =================================================
+            // OFFLINE
+            // =================================================
+
             if (!navigator.onLine) {
-                // Uruchamiamy zapis do lokalnej kolejki Firestore,
-                // ale nie czekamy na potwierdzenie serwera.
-                createProtocol(protocolToSave).catch((error) => {
+
+                /*
+                    Nie robimy tutaj await.
+
+                    Firestore zapisuje dokument
+                    do lokalnej kolejki.
+
+                    Kiedy internet wróci,
+                    dokument zostanie wysłany
+                    automatycznie.
+                */
+
+                createProtocol(
+                    protocolToSave
+                ).catch((error) => {
+
                     console.error(
-                        "Błąd synchronizacji protokołu:",
+                        "Błąd synchronizacji protokołu offline:",
                         error
                     );
                 });
 
-                const nextLocalNumber =
-                    getNextLocalProtocolNumber(
-                        formData.protocolNumber
-                    );
 
                 setSavedProtocol(protocol);
-                await resetForm(nextLocalNumber);
+
+
+                // FORMULARZ CZYŚCI SIĘ OD RAZU
+                resetForm();
+
 
                 alert(
-                    "Protokół zapisany lokalnie ✅ Zostanie wysłany po odzyskaniu internetu."
+
+                    "Protokół zapisany offline ✅\n\n" +
+
+                    "Finalny numer zostanie nadany automatycznie po odzyskaniu internetu."
                 );
+
 
                 return;
             }
 
-            await createProtocol(protocolToSave);
+
+            // =================================================
+            // ONLINE
+            // =================================================
+
+            const protocolId =
+                await createProtocol(
+                    protocolToSave
+                );
+
 
             setSavedProtocol(protocol);
-            await resetForm();
 
-            alert("Protokół zapisany w Firebase ✅");
+
+            // Czyścimy formularz.
+            resetForm();
+
+
+            /*
+                Teraz nadajemy właściwy numer:
+
+                np.
+
+                TEMP-1908-170520-X4P2
+
+                ↓
+
+                047/2026
+
+                Robimy to przez transakcję Firestore.
+            */
+
+            finalizeProtocolNumber(
+                protocolId
+            ).catch((error) => {
+
+                console.error(
+                    "Nie udało się nadać finalnego numeru protokołu:",
+                    error
+                );
+            });
+
+
+            alert(
+                "Protokół zapisany ✅"
+            );
+
+
         } catch (error) {
+
             console.error(
                 "Błąd zapisu protokołu:",
                 error
             );
 
+
             alert(
-                `Nie udało się zapisać protokołu: ${error.message || "nieznany błąd"
+
+                `Nie udało się zapisać protokołu: ${error.message ||
+                "nieznany błąd"
                 }`
             );
         }
     };
 
 
-    const saveFarmerSignature = (signatureImage) => {
-        setFormData((prev) => ({
-            ...prev,
-            farmerSignature: signatureImage,
-        }));
-    };
+    // =====================================================
+    // PODPIS HODOWCY
+    // =====================================================
 
-    const saveWorkerSignature = (signatureImage) => {
-        setFormData((prev) => ({
-            ...prev,
-            workerSignature: signatureImage,
-        }));
-    };
+    const saveFarmerSignature =
+        (signatureImage) => {
+
+            setFormData((prev) => ({
+
+                ...prev,
+
+                farmerSignature:
+                    signatureImage,
+            }));
+        };
+
+
+    // =====================================================
+    // PODPIS TECHNIKA
+    // =====================================================
+
+    const saveWorkerSignature =
+        (signatureImage) => {
+
+            setFormData((prev) => ({
+
+                ...prev,
+
+                workerSignature:
+                    signatureImage,
+            }));
+        };
+
+
+    // =====================================================
+    // OSOBY WYKONUJĄCE ZABIEG
+    // =====================================================
 
     const addWorker = () => {
+
         setFormData((prev) => ({
+
             ...prev,
-            workers: [...prev.workers, ""],
+
+            workers: [
+
+                ...prev.workers,
+
+                "",
+            ],
         }));
     };
 
-    const updateWorker = (index) => (event) => {
-        setFormData((prev) => ({
-            ...prev,
-            workers: prev.workers.map((worker, workerIndex) =>
-                workerIndex === index ? event.target.value : worker
-            ),
-        }));
-    };
 
-    const removeWorker = (indexToRemove) => {
-        setFormData((prev) => ({
-            ...prev,
-            workers: prev.workers.filter((_, index) => index !== indexToRemove),
-        }));
-    };
+    const updateWorker =
+        (index) => (event) => {
+
+            setFormData((prev) => ({
+
+                ...prev,
+
+                workers:
+                    prev.workers.map(
+                        (
+                            worker,
+                            workerIndex
+                        ) =>
+
+                            workerIndex === index
+
+                                ? event.target.value
+
+                                : worker
+                    ),
+            }));
+        };
+
+
+    const removeWorker =
+        (indexToRemove) => {
+
+            setFormData((prev) => ({
+
+                ...prev,
+
+                workers:
+                    prev.workers.filter(
+                        (_, index) =>
+                            index !==
+                            indexToRemove
+                    ),
+            }));
+        };
+
+
+    // =====================================================
+    // OD TEGO MIEJSCA ZOSTAWIASZ SWÓJ OBECNY JSX
+    // =====================================================
 
     return (
         <Card>

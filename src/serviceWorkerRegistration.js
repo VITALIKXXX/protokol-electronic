@@ -6,30 +6,66 @@ const isLocalhost = Boolean(
     )
 );
 
+
 export const register = (config) => {
     if (!("serviceWorker" in navigator)) {
         return;
     }
 
-    window.addEventListener("load", () => {
-        const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
+    window.addEventListener("load", () => {
+        const swUrl =
+            `${process.env.PUBLIC_URL}/service-worker.js`;
+
+
+        // Podczas npm start na localhost
+        // nie używamy service workera.
         if (isLocalhost) {
             return;
         }
 
+
         navigator.serviceWorker
             .register(swUrl)
             .then((registration) => {
+
+                // ==========================================
+                // NOWA WERSJA JUŻ CZEKA
+                //
+                // Może się zdarzyć, że update został pobrany
+                // zanim aplikacja zdążyła podpiąć listener.
+                // ==========================================
+
+                if (
+                    registration.waiting &&
+                    navigator.serviceWorker.controller
+                ) {
+                    console.log(
+                        "Dostępna jest nowa wersja aplikacji."
+                    );
+
+                    config?.onUpdate?.(
+                        registration
+                    );
+                }
+
+
+                // ==========================================
+                // WYKRYWANIE NOWEJ WERSJI
+                // ==========================================
+
                 registration.onupdatefound = () => {
                     const installingWorker =
                         registration.installing;
+
 
                     if (!installingWorker) {
                         return;
                     }
 
+
                     installingWorker.onstatechange = () => {
+
                         if (
                             installingWorker.state !==
                             "installed"
@@ -37,25 +73,56 @@ export const register = (config) => {
                             return;
                         }
 
-                        if (navigator.serviceWorker.controller) {
+
+                        // Stara wersja już kontroluje stronę,
+                        // czyli właśnie pobraliśmy aktualizację.
+                        if (
+                            navigator.serviceWorker.controller
+                        ) {
                             console.log(
                                 "Dostępna jest nowa wersja aplikacji."
                             );
 
-                            if (config?.onUpdate) {
-                                config.onUpdate(registration);
-                            }
-                        } else {
-                            console.log(
-                                "Aplikacja została zapisana do pracy offline."
+
+                            config?.onUpdate?.(
+                                registration
                             );
 
-                            if (config?.onSuccess) {
-                                config.onSuccess(registration);
-                            }
+
+                            return;
                         }
+
+
+                        // Pierwsza instalacja PWA.
+                        console.log(
+                            "Aplikacja została zapisana do pracy offline."
+                        );
+
+
+                        config?.onSuccess?.(
+                            registration
+                        );
                     };
                 };
+
+
+                // ==========================================
+                // SPRAWDZENIE AKTUALIZACJI
+                //
+                // Przy każdym uruchomieniu aplikacji
+                // sprawdzamy, czy Netlify ma nową wersję.
+                // ==========================================
+
+                if (navigator.onLine) {
+                    registration
+                        .update()
+                        .catch((error) => {
+                            console.warn(
+                                "Nie udało się sprawdzić aktualizacji:",
+                                error
+                            );
+                        });
+                }
             })
             .catch((error) => {
                 console.error(
@@ -66,16 +133,20 @@ export const register = (config) => {
     });
 };
 
+
 export const unregister = () => {
     if (!("serviceWorker" in navigator)) {
         return;
     }
+
 
     navigator.serviceWorker.ready
         .then((registration) => {
             registration.unregister();
         })
         .catch((error) => {
-            console.error(error.message);
+            console.error(
+                error.message
+            );
         });
 };
