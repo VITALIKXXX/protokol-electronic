@@ -63,3 +63,50 @@ export const SearchInput = styled.input`
     color: #94a3b8;
   }
 `;
+
+export const Tabs = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+`;
+
+export const TabButton = styled.button`
+  border: 1px solid
+    ${({ $active }) =>
+    $active ? "#3b82f6" : "#374151"};
+
+  background:
+    ${({ $active }) =>
+    $active ? "#2563eb" : "#111827"};
+
+  color:
+    ${({ $active }) =>
+    $active ? "#ffffff" : "#d1d5db"};
+
+  padding: 11px 18px;
+
+  border-radius: 12px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    transform 0.15s;
+
+  &:hover {
+    background:
+      ${({ $active }) =>
+    $active ? "#1d4ed8" : "#1f2937"};
+
+    border-color: #4b5563;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+`;

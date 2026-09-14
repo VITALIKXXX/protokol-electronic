@@ -18,10 +18,15 @@ import {
   SearchWrapper,
   SearchIcon,
   SearchInput,
+  Tabs,
+  TabButton,
 } from "./App.styles";
 
 import { NetworkStatus } from "../features/network/NetworkStatus";
 import { AppUpdateBanner } from "../features/update/AppUpdateBanner";
+import {
+  ProductPresetsManager,
+} from "../features/protocols/ProductPresetsManager";
 
 
 const App = ({
@@ -36,6 +41,9 @@ const App = ({
   const [editingProtocol, setEditingProtocol] = useState(null);
 
   const [search, setSearch] = useState("");
+
+  const [activeView, setActiveView] =
+    useState("protocols");
 
 
   // =====================================================
@@ -196,37 +204,91 @@ const App = ({
 
 
         <Main>
-          <ProtocolForm
-            editingProtocol={editingProtocol}
-            onFinishEdit={() =>
-              setEditingProtocol(null)
-            }
-            currentUser={currentUser}
-            currentUserData={currentUserData}
-          />
+          <Tabs>
 
-
-          <SearchWrapper>
-            <SearchIcon>
-              🔍
-            </SearchIcon>
-
-            <SearchInput
-              placeholder="Szukaj protokołu..."
-              value={search}
-              onChange={(event) =>
-                setSearch(event.target.value)
+            <TabButton
+              type="button"
+              $active={
+                activeView === "protocols"
               }
-            />
-          </SearchWrapper>
+              onClick={() =>
+                setActiveView("protocols")
+              }
+            >
+              📋 Protokoły
+            </TabButton>
 
 
-          <ProtocolList
-            protocols={filteredProtocols}
-            onEdit={setEditingProtocol}
-            onDelete={handleDeleteProtocol}
-            role={role}
-          />
+            {role === "admin" && (
+
+              <TabButton
+                type="button"
+                $active={
+                  activeView === "products"
+                }
+                onClick={() =>
+                  setActiveView("products")
+                }
+              >
+                🧪 Baza preparatów
+              </TabButton>
+
+            )}
+
+          </Tabs>
+          {activeView === "protocols" && (
+            <>
+              <ProtocolForm
+                editingProtocol={
+                  editingProtocol
+                }
+                onFinishEdit={() =>
+                  setEditingProtocol(null)
+                }
+                currentUser={
+                  currentUser
+                }
+                currentUserData={
+                  currentUserData
+                }
+              />
+
+
+              <SearchWrapper>
+                <SearchIcon>
+                  🔍
+                </SearchIcon>
+
+                <SearchInput
+                  placeholder="Szukaj protokołu..."
+                  value={search}
+                  onChange={(event) =>
+                    setSearch(
+                      event.target.value
+                    )
+                  }
+                />
+              </SearchWrapper>
+
+
+              <ProtocolList
+                protocols={
+                  filteredProtocols
+                }
+                onEdit={
+                  setEditingProtocol
+                }
+                onDelete={
+                  handleDeleteProtocol
+                }
+                role={role}
+              />
+            </>
+          )}
+          {activeView === "products" &&
+            role === "admin" && (
+              <ProductPresetsManager />
+            )}
         </Main>
       </AppShell>
     </>

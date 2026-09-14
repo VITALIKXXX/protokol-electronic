@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { SignaturePad } from "./SignaturePad";
+import {
+    subscribeProductPresets,
+} from "./productsApi";
 
 import {
     createProtocol,
@@ -28,11 +31,13 @@ import {
 
 const emptyProduct = {
     documentNumber: "",
+    presetId: "",
+    isCustom: false,
     name: "",
     batch: "",
     expiryDate: "",
     quantity: "",
-    dosage: "",
+    dosage: "Spray",
 };
 
 
@@ -51,6 +56,23 @@ export const ProtocolForm = ({
         { ...emptyProduct },
     ]);
 
+    const [
+        productPresets,
+        setProductPresets,
+    ] = useState([]);
+
+    useEffect(() => {
+
+        const unsubscribe =
+            subscribeProductPresets(
+                setProductPresets
+            );
+
+        return () => {
+            unsubscribe();
+        };
+
+    }, []);
 
     const [formData, setFormData] = useState({
 
@@ -409,7 +431,113 @@ export const ProtocolForm = ({
             );
         };
 
+    const selectProductPreset =
+        (index) => (event) => {
 
+            const selectedValue =
+                event.target.value;
+
+
+            // ==========================
+            // INNY PREPARAT
+            // ==========================
+
+            if (
+                selectedValue ===
+                "__custom__"
+            ) {
+
+                setProducts((prev) =>
+                    prev.map(
+                        (
+                            product,
+                            productIndex
+                        ) =>
+
+                            productIndex === index
+
+                                ? {
+                                    ...product,
+
+                                    presetId: "",
+
+                                    isCustom:
+                                        true,
+
+                                    name: "",
+
+                                    batch: "",
+
+                                    expiryDate: "",
+
+                                    dosage:
+                                        "Spray",
+                                }
+
+                                : product
+                    )
+                );
+
+                return;
+            }
+
+
+            // ==========================
+            // PREPARAT Z FIREBASE
+            // ==========================
+
+            const preset =
+                productPresets.find(
+                    (product) =>
+                        product.id ===
+                        selectedValue
+                );
+
+
+            if (!preset) {
+                return;
+            }
+
+
+            setProducts((prev) =>
+                prev.map(
+                    (
+                        product,
+                        productIndex
+                    ) =>
+
+                        productIndex === index
+
+                            ? {
+                                ...product,
+
+                                presetId:
+                                    preset.id,
+
+                                isCustom:
+                                    false,
+
+                                name:
+                                    preset.name ||
+                                    "",
+
+                                batch:
+                                    preset.batch ||
+                                    "",
+
+                                expiryDate:
+                                    preset.expiryDate ||
+                                    "",
+
+                                dosage:
+                                    preset.dosage ||
+                                    "Spray",
+                            }
+
+                            : product
+                )
+            );
+        };
     // =====================================================
     // KTO UTWORZYŁ / EDYTOWAŁ PROTOKÓŁ
     // =====================================================
@@ -974,13 +1102,70 @@ export const ProtocolForm = ({
                             </Field>
 
                             <Field>
-                                <Label>Nazwa / opakowanie</Label>
+                                <Label>
+                                    Preparat / szczepionka
+                                </Label>
+
                                 <Input
-                                    value={product.name}
-                                    onChange={updateProduct(index, "name")}
-                                    placeholder="np. Nobilis IB"
-                                />
+                                    as="select"
+                                    value={
+                                        product.isCustom
+                                            ? "__custom__"
+                                            : product.presetId
+                                    }
+                                    onChange={
+                                        selectProductPreset(
+                                            index
+                                        )
+                                    }
+                                >
+                                    <option value="">
+                                        -- wybierz preparat --
+                                    </option>
+
+                                    {productPresets.map(
+                                        (preset) => (
+                                            <option
+                                                key={
+                                                    preset.id
+                                                }
+                                                value={
+                                                    preset.id
+                                                }
+                                            >
+                                                {preset.name}
+                                            </option>
+                                        )
+                                    )}
+
+                                    <option
+                                        value="__custom__"
+                                    >
+                                        ✏️ Inny — wpisz ręcznie
+                                    </option>
+                                </Input>
                             </Field>
+
+                            {product.isCustom && (
+                                <Field>
+                                    <Label>
+                                        Nazwa preparatu
+                                    </Label>
+
+                                    <Input
+                                        value={
+                                            product.name
+                                        }
+                                        onChange={
+                                            updateProduct(
+                                                index,
+                                                "name"
+                                            )
+                                        }
+                                        placeholder="Wpisz nazwę preparatu"
+                                    />
+                                </Field>
+                            )}
 
                             <Field>
                                 <Label>Seria</Label>
@@ -1010,12 +1195,46 @@ export const ProtocolForm = ({
                             </Field>
 
                             <Field>
-                                <Label>Dawkowanie / metoda zastosowania</Label>
+                                <Label>
+                                    Dawkowanie / metoda zastosowania
+                                </Label>
+
                                 <Input
+                                    as="select"
                                     value={product.dosage}
-                                    onChange={updateProduct(index, "dosage")}
-                                    placeholder="np. w wodzie do picia"
-                                />
+                                    onChange={updateProduct(
+                                        index,
+                                        "dosage"
+                                    )}
+                                >
+                                    <option value="Spray">
+                                        Spray
+                                    </option>
+
+                                    <option value="Woda">
+                                        Woda
+                                    </option>
+
+                                    <option value="Kropla do oka">
+                                        Kropla do oka
+                                    </option>
+
+                                    <option value="Iniekcja IM">
+                                        Iniekcja IM
+                                    </option>
+
+                                    <option value="Iniekcja SC">
+                                        Iniekcja SC
+                                    </option>
+
+                                    <option value="Błona skrzydłowa">
+                                        Błona skrzydłowa
+                                    </option>
+
+                                    <option value="Inne">
+                                        Inne
+                                    </option>
+                                </Input>
                             </Field>
                         </Grid>
 
