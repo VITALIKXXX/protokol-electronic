@@ -68,10 +68,7 @@ export const ProtocolForm = ({
         startTime: "",
 
         endTime: "",
-
         breeder: "",
-
-        city: "",
 
         building: "",
 
@@ -83,13 +80,7 @@ export const ProtocolForm = ({
 
         notes: "",
 
-        dateChangeReason: "",
-
         transportTemperature: "2-8°C",
-
-        supervisor: "",
-
-        authorizedPerson: "",
 
         workers: [""],
 
@@ -146,8 +137,6 @@ export const ProtocolForm = ({
 
             breeder: "",
 
-            city: "",
-
             building: "",
 
             animalAge: "",
@@ -158,13 +147,7 @@ export const ProtocolForm = ({
 
             notes: "",
 
-            dateChangeReason: "",
-
             transportTemperature: "2-8°C",
-
-            supervisor: "",
-
-            authorizedPerson: "",
 
             workers: [""],
 
@@ -918,15 +901,6 @@ export const ProtocolForm = ({
                             onChange={updateField("endTime")}
                         />
                     </Field>
-
-                    <Field>
-                        <Label>Przyczyna zmiany daty</Label>
-                        <Input
-                            value={formData.dateChangeReason}
-                            onChange={updateField("dateChangeReason")}
-                            placeholder="opcjonalnie"
-                        />
-                    </Field>
                 </Grid>
             </Section>
 
@@ -940,15 +914,6 @@ export const ProtocolForm = ({
                             value={formData.breeder}
                             onChange={updateField("breeder")}
                             placeholder="np. Specjalistyczne Gospodarstwo Rolne..."
-                        />
-                    </Field>
-
-                    <Field>
-                        <Label>Miejscowość</Label>
-                        <Input
-                            value={formData.city}
-                            onChange={updateField("city")}
-                            placeholder="np. Poznań"
                         />
                     </Field>
 
@@ -1150,23 +1115,6 @@ export const ProtocolForm = ({
                 )}
 
                 <Grid>
-                    <Field>
-                        <Label>Osoba nadzorująca</Label>
-                        <Input
-                            value={formData.supervisor}
-                            onChange={updateField("supervisor")}
-                            placeholder="imię i nazwisko"
-                        />
-                    </Field>
-
-                    <Field>
-                        <Label>Hodowca / osoba upoważniona</Label>
-                        <Input
-                            value={formData.authorizedPerson}
-                            onChange={updateField("authorizedPerson")}
-                            placeholder="imię i nazwisko"
-                        />
-                    </Field>
 
                     <Field>
                         <Label>Osoby wykonujące zabieg</Label>
