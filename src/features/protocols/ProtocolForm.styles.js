@@ -35,6 +35,7 @@ export const Field = styled.label`
   display: grid;
   gap: 6px;
   margin-bottom: 14px;
+  align-self: start;
 `;
 
 export const Label = styled.span`

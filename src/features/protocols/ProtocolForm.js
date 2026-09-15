@@ -61,6 +61,16 @@ export const ProtocolForm = ({
         setProductPresets,
     ] = useState([]);
 
+    const [
+        productSearch,
+        setProductSearch,
+    ] = useState("");
+
+    const [
+        openedProductIndex,
+        setOpenedProductIndex,
+    ] = useState(null);
+
     useEffect(() => {
 
         const unsubscribe =
@@ -432,15 +442,7 @@ export const ProtocolForm = ({
         };
 
     const selectProductPreset =
-        (index) => (event) => {
-
-            const selectedValue =
-                event.target.value;
-
-
-            // ==========================
-            // INNY PREPARAT
-            // ==========================
+        (index, selectedValue) => {
 
             if (
                 selectedValue ===
@@ -478,13 +480,16 @@ export const ProtocolForm = ({
                     )
                 );
 
+
+                setOpenedProductIndex(
+                    null
+                );
+
+                setProductSearch("");
+
                 return;
             }
 
-
-            // ==========================
-            // PREPARAT Z FIREBASE
-            // ==========================
 
             const preset =
                 productPresets.find(
@@ -537,6 +542,13 @@ export const ProtocolForm = ({
                             : product
                 )
             );
+
+
+            setOpenedProductIndex(
+                null
+            );
+
+            setProductSearch("");
         };
     // =====================================================
     // KTO UTWORZYŁ / EDYTOWAŁ PROTOKÓŁ
@@ -868,6 +880,38 @@ export const ProtocolForm = ({
     // OD TEGO MIEJSCA ZOSTAWIASZ SWÓJ OBECNY JSX
     // =====================================================
 
+    const getFilteredProductPresets = () => {
+
+        const query =
+            productSearch
+                .trim()
+                .toLowerCase();
+
+        if (!query) {
+            return productPresets;
+        }
+
+        return productPresets.filter(
+            (preset) => {
+
+                const name =
+                    String(
+                        preset.name || ""
+                    ).toLowerCase();
+
+                const batch =
+                    String(
+                        preset.batch || ""
+                    ).toLowerCase();
+
+                return (
+                    name.includes(query) ||
+                    batch.includes(query)
+                );
+            }
+        );
+    };
+
     return (
         <Card>
             <Section>
@@ -1102,52 +1146,285 @@ export const ProtocolForm = ({
                             </Field>
 
                             <Field>
+
                                 <Label>
                                     Preparat / szczepionka
                                 </Label>
 
-                                <Input
-                                    as="select"
-                                    value={
-                                        product.isCustom
-                                            ? "__custom__"
-                                            : product.presetId
-                                    }
-                                    onChange={
-                                        selectProductPreset(
+
+                                <button
+                                    type="button"
+                                    onClick={() => {
+
+                                        if (
+                                            openedProductIndex ===
                                             index
-                                        )
-                                    }
+                                        ) {
+                                            setOpenedProductIndex(
+                                                null
+                                            );
+
+                                            setProductSearch("");
+
+                                            return;
+                                        }
+
+                                        setOpenedProductIndex(
+                                            index
+                                        );
+
+                                        setProductSearch("");
+                                    }}
+                                    style={{
+                                        width: "100%",
+                                        padding: "12px 14px",
+                                        borderRadius: "10px",
+                                        border:
+                                            "1px solid #374151",
+                                        background:
+                                            "#e5e7eb",
+                                        color: "#111827",
+                                        textAlign: "left",
+                                        cursor: "pointer",
+                                        fontSize: "15px",
+                                    }}
                                 >
-                                    <option value="">
-                                        -- wybierz preparat --
-                                    </option>
 
-                                    {productPresets.map(
-                                        (preset) => (
-                                            <option
-                                                key={
-                                                    preset.id
-                                                }
+                                    {
+                                        product.name
+                                            ? product.name
+                                            : "🔎 Wybierz preparat"
+                                    }
+
+                                </button>
+
+
+                                {
+                                    openedProductIndex ===
+                                    index && (
+
+                                        <div
+                                            style={{
+                                                marginTop:
+                                                    "8px",
+
+                                                padding:
+                                                    "12px",
+
+                                                background:
+                                                    "#111827",
+
+                                                border:
+                                                    "1px solid #374151",
+
+                                                borderRadius:
+                                                    "12px",
+                                                maxHeight: "320px",
+
+                                                overflowY:
+                                                    "auto",
+                                            }}
+                                        >
+
+                                            <Input
                                                 value={
-                                                    preset.id
+                                                    productSearch
                                                 }
-                                            >
-                                                {preset.name}
-                                                {" — seria: "}
-                                                {preset.batch || "brak"}
-                                                {" — ważność: "}
-                                                {preset.expiryDate || "brak"}
-                                            </option>
-                                        )
-                                    )}
+                                                onChange={
+                                                    (event) =>
+                                                        setProductSearch(
+                                                            event.target.value
+                                                        )
+                                                }
+                                                placeholder="🔎 Szukaj po nazwie lub serii..."
+                                                autoFocus
+                                            />
 
-                                    <option
-                                        value="__custom__"
-                                    >
-                                        ✏️ Inny — wpisz ręcznie
-                                    </option>
-                                </Input>
+
+                                            <div
+                                                style={{
+                                                    display:
+                                                        "grid",
+
+                                                    gap: "8px",
+
+                                                    marginTop:
+                                                        "10px",
+                                                }}
+                                            >
+
+                                                {
+                                                    getFilteredProductPresets()
+                                                        .map(
+                                                            (preset) => (
+
+                                                                <button
+                                                                    key={
+                                                                        preset.id
+                                                                    }
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        selectProductPreset(
+                                                                            index,
+                                                                            preset.id
+                                                                        )
+                                                                    }
+                                                                    style={{
+                                                                        width:
+                                                                            "100%",
+
+                                                                        padding:
+                                                                            "12px",
+
+                                                                        borderRadius:
+                                                                            "10px",
+
+                                                                        border:
+                                                                            "1px solid #374151",
+
+                                                                        background:
+                                                                            "#1f2937",
+
+                                                                        color:
+                                                                            "#ffffff",
+
+                                                                        textAlign:
+                                                                            "left",
+
+                                                                        cursor:
+                                                                            "pointer",
+                                                                    }}
+                                                                >
+
+                                                                    <div
+                                                                        style={{
+                                                                            fontWeight:
+                                                                                "700",
+
+                                                                            fontSize:
+                                                                                "15px",
+
+                                                                            marginBottom:
+                                                                                "6px",
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            preset.name
+                                                                        }
+                                                                    </div>
+
+
+                                                                    <div
+                                                                        style={{
+                                                                            fontSize:
+                                                                                "13px",
+
+                                                                            color:
+                                                                                "#d1d5db",
+                                                                        }}
+                                                                    >
+                                                                        Seria:{" "}
+                                                                        <strong>
+                                                                            {
+                                                                                preset.batch ||
+                                                                                "-"
+                                                                            }
+                                                                        </strong>
+                                                                    </div>
+
+
+                                                                    <div
+                                                                        style={{
+                                                                            fontSize:
+                                                                                "13px",
+
+                                                                            color:
+                                                                                "#d1d5db",
+                                                                        }}
+                                                                    >
+                                                                        Ważność:{" "}
+                                                                        <strong>
+                                                                            {
+                                                                                preset.expiryDate ||
+                                                                                "-"
+                                                                            }
+                                                                        </strong>
+                                                                    </div>
+
+                                                                </button>
+
+                                                            )
+                                                        )
+                                                }
+
+
+                                                {
+                                                    getFilteredProductPresets()
+                                                        .length === 0 && (
+
+                                                        <div
+                                                            style={{
+                                                                padding:
+                                                                    "14px",
+
+                                                                color:
+                                                                    "#9ca3af",
+
+                                                                textAlign:
+                                                                    "center",
+                                                            }}
+                                                        >
+                                                            Nie znaleziono preparatu.
+                                                        </div>
+
+                                                    )
+                                                }
+
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        selectProductPreset(
+                                                            index,
+                                                            "__custom__"
+                                                        )
+                                                    }
+                                                    style={{
+                                                        width:
+                                                            "100%",
+
+                                                        padding:
+                                                            "12px",
+
+                                                        borderRadius:
+                                                            "10px",
+
+                                                        border:
+                                                            "1px dashed #6b7280",
+
+                                                        background:
+                                                            "transparent",
+
+                                                        color:
+                                                            "#ffffff",
+
+                                                        textAlign:
+                                                            "left",
+
+                                                        cursor:
+                                                            "pointer",
+                                                    }}
+                                                >
+                                                    ✏️ Inny — wpisz ręcznie
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    )
+                                }
+
                             </Field>
 
                             {product.isCustom && (
