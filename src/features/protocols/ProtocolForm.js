@@ -1134,6 +1134,10 @@ export const ProtocolForm = ({
                                                 }
                                             >
                                                 {preset.name}
+                                                {" — seria: "}
+                                                {preset.batch || "brak"}
+                                                {" — ważność: "}
+                                                {preset.expiryDate || "brak"}
                                             </option>
                                         )
                                     )}
