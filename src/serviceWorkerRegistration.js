@@ -113,7 +113,11 @@ export const register = (config) => {
                 // sprawdzamy, czy Netlify ma nową wersję.
                 // ==========================================
 
-                if (navigator.onLine) {
+                const checkForUpdate = () => {
+                    if (!navigator.onLine) {
+                        return;
+                    }
+
                     registration
                         .update()
                         .catch((error) => {
@@ -122,7 +126,36 @@ export const register = (config) => {
                                 error
                             );
                         });
-                }
+                };
+
+
+                // Sprawdzamy od razu po uruchomieniu.
+                checkForUpdate();
+
+
+                // Sprawdzamy po powrocie internetu.
+                window.addEventListener(
+                    "online",
+                    checkForUpdate
+                );
+
+
+                // Bardzo ważne dla telefonu/PWA:
+                //
+                // Gdy użytkownik wraca do aplikacji
+                // po tym, jak była w tle,
+                // ponownie pytamy o nową wersję.
+                document.addEventListener(
+                    "visibilitychange",
+                    () => {
+                        if (
+                            document.visibilityState ===
+                            "visible"
+                        ) {
+                            checkForUpdate();
+                        }
+                    }
+                );
             })
             .catch((error) => {
                 console.error(
