@@ -219,21 +219,17 @@ const App = ({
             </TabButton>
 
 
-            {role === "admin" && (
-
-              <TabButton
-                type="button"
-                $active={
-                  activeView === "products"
-                }
-                onClick={() =>
-                  setActiveView("products")
-                }
-              >
-                🧪 Baza preparatów
-              </TabButton>
-
-            )}
+            <TabButton
+              type="button"
+              $active={
+                activeView === "products"
+              }
+              onClick={() =>
+                setActiveView("products")
+              }
+            >
+              🧪 Baza preparatów
+            </TabButton>
 
           </Tabs>
           {activeView === "protocols" && (
@@ -285,10 +281,11 @@ const App = ({
               />
             </>
           )}
-          {activeView === "products" &&
-            role === "admin" && (
-              <ProductPresetsManager />
-            )}
+          {activeView === "products" && (
+            <ProductPresetsManager
+              role={role}
+            />
+          )}
         </Main>
       </AppShell>
     </>

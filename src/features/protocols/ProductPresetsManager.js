@@ -48,7 +48,9 @@ const emptyForm = {
 
 
 export const ProductPresetsManager =
-    () => {
+    ({ role }) => {
+
+        const isAdmin = role === "admin";
 
         const [
             products,
@@ -208,6 +210,14 @@ export const ProductPresetsManager =
 
         const handleDelete =
             async (product) => {
+
+                if (!isAdmin) {
+                    alert(
+                        "Tylko administrator może usuwać preparaty."
+                    );
+
+                    return;
+                }
 
                 const confirmed =
                     window.confirm(
@@ -506,16 +516,18 @@ export const ProductPresetsManager =
                                                         </EditButton>
 
 
-                                                        <DeleteButton
-                                                            type="button"
-                                                            onClick={() =>
-                                                                handleDelete(
-                                                                    product
-                                                                )
-                                                            }
-                                                        >
-                                                            🗑 Usuń
-                                                        </DeleteButton>
+                                                        {isAdmin && (
+                                                            <DeleteButton
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        product
+                                                                    )
+                                                                }
+                                                            >
+                                                                🗑 Usuń
+                                                            </DeleteButton>
+                                                        )}
 
                                                     </ProductActions>
 
