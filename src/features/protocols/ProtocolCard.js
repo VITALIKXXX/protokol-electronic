@@ -1,5 +1,7 @@
+
 import { useState } from "react";
 import { generateProtocolPdfV2 } from "./generateProtocolPdfV2";
+
 import {
     Card,
     Number,
@@ -9,47 +11,76 @@ import {
     ActionButton,
 } from "./ProtocolCard.styles";
 
-
-export const ProtocolCard = ({ protocol, onEdit, onDelete, role, }) => {
+export const ProtocolCard = ({
+    protocol,
+    onEdit,
+    onDelete,
+    role,
+}) => {
     const [isOpen, setIsOpen] = useState(false);
+
     const isAdmin = role === "admin";
 
     return (
         <Card onClick={() => setIsOpen((prev) => !prev)}>
-            <Number>{protocol.protocolNumber || "Bez numeru"}</Number>
+            <Number>
+                {protocol.protocolNumber || "Bez numeru"}
+            </Number>
 
-            <Meta>Hodowca: {protocol.breeder || "Brak"}</Meta>
+            <Meta>
+                <strong>Hodowca:</strong>{" "}
+                {protocol.breeder || "Brak"}
+            </Meta>
 
             <DateText>
-                Data wykonania: {protocol.executionDate || protocol.orderDate || "Brak daty"}
+                Data wykonania:{" "}
+                {protocol.executionDate ||
+                    protocol.orderDate ||
+                    "Brak daty"}
             </DateText>
 
             {isOpen && (
-                <div onClick={(e) => e.stopPropagation()}>
-                    <p>
+                <div
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                        marginTop: "10px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "6px",
+                    }}
+                >
+                    <Meta>
                         <strong>Osoba zlecająca:</strong>{" "}
                         {protocol.orderingPerson || "-"}
-                    </p>
+                    </Meta>
 
-                    <p>
-                        <strong>Uwagi:</strong> {protocol.notes || "-"}
-                    </p>
+                    <Meta>
+                        <strong>Uwagi:</strong>{" "}
+                        {protocol.notes || "-"}
+                    </Meta>
 
                     {protocol.createdBy?.name && (
-                        <p>
+                        <Meta>
                             <strong>Utworzył:</strong>{" "}
                             {protocol.createdBy.name}
-                        </p>
+                        </Meta>
                     )}
 
                     <Actions>
-                        <ActionButton type="button" onClick={() => generateProtocolPdfV2(protocol)}>
+                        <ActionButton
+                            type="button"
+                            onClick={() => generateProtocolPdfV2(protocol)}
+                        >
                             PDF
                         </ActionButton>
 
-                        <ActionButton type="button" onClick={() => onEdit(protocol)}>
+                        <ActionButton
+                            type="button"
+                            onClick={() => onEdit(protocol)}
+                        >
                             Edytuj
                         </ActionButton>
+
                         <ActionButton
                             type="button"
                             $variant="danger"

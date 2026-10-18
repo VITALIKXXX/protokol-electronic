@@ -1,62 +1,127 @@
+
 import styled from "styled-components";
 
 export const Card = styled.div`
-  padding: 16px;
-  margin-bottom: 12px;
-  border-radius: 14px;
-  background: #111827;
-  border: 1px solid rgba(255,255,255,0.08);
+  padding: 14px 18px;
+  margin-bottom: 10px;
 
-  transition: 0.2s;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    border-color: rgba(37,99,235,0.5);
+    background: #243449;
+    border-color: #2dd4bf;
+  }
+
+  @media (max-width: 600px) {
+    padding: 12px 14px;
+    margin-bottom: 8px;
   }
 `;
 
 export const Number = styled.h3`
-  margin: 0 0 8px;
-  color: #60a5fa;
+  margin: 0 0 6px;
+  color: #5eead4;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.3;
 `;
 
 export const Meta = styled.div`
-  color: #e5e7eb;
+  margin: 0;
+  padding: 0;
+
+  color: #e2e8f0;
+  font-size: 14px;
+  line-height: 1.5;
+
+  p {
+    margin: 4px 0;
+  }
+
+  strong {
+    color: #f8fafc;
+    font-weight: 600;
+  }
 `;
 
 export const DateText = styled.div`
   margin-top: 8px;
+  padding-top: 8px;
+
+  border-top: 1px solid #334155;
+
   color: #94a3b8;
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1.4;
 `;
 
 export const Actions = styled.div`
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
-  margin-top: 14px;
+  gap: 8px;
+
+  margin-top: 12px;
+
+  @media (max-width: 600px) {
+    gap: 8px;
+  }
 `;
 
 export const ActionButton = styled.button`
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  min-height: 44px;
+
+  border: 1px solid ${({ $variant }) =>
+    $variant === "danger" ? "#b45353" : "#2dd4bf"};
+
   background: ${({ $variant }) =>
-    $variant === "danger" ? "rgba(239, 68, 68, 0.16)" : "rgba(37, 99, 235, 0.18)"};
+    $variant === "danger"
+      ? "rgba(239, 68, 68, 0.12)"
+      : "rgba(45, 212, 191, 0.12)"};
+
   color: ${({ $variant }) =>
-    $variant === "danger" ? "#fecaca" : "#bfdbfe"};
-  padding: 10px 14px;
+    $variant === "danger" ? "#fca5a5" : "#5eead4"};
+
+  padding: 11px 16px;
   border-radius: 12px;
+
   cursor: pointer;
+  font-size: 14px;
   font-weight: 700;
 
-  &:hover {
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+
+  &:hover:not(:disabled) {
     background: ${({ $variant }) =>
-    $variant === "danger" ? "rgba(239, 68, 68, 0.28)" : "rgba(37, 99, 235, 0.3)"};
+    $variant === "danger"
+      ? "rgba(239, 68, 68, 0.24)"
+      : "rgba(45, 212, 191, 0.22)"};
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: 3px solid #5eead4;
+    outline-offset: 3px;
   }
 
   &:disabled {
     opacity: 0.45;
     cursor: not-allowed;
-    background: #9ca3af;
-    color: white;
-}
+  }
+
+  @media (max-width: 600px) {
+    flex: 1 1 auto;
+    padding: 12px;
+  }
 `;

@@ -1175,19 +1175,20 @@ export const ProtocolForm = ({
 
                                         setProductSearch("");
                                     }}
+
                                     style={{
                                         width: "100%",
                                         padding: "12px 14px",
-                                        borderRadius: "10px",
-                                        border:
-                                            "1px solid #374151",
-                                        background:
-                                            "#e5e7eb",
-                                        color: "#111827",
+                                        borderRadius: "12px",
+                                        border: "1px solid #475569",
+                                        background: "#0f172a",
+                                        color: "#f1f5f9",
                                         textAlign: "left",
                                         cursor: "pointer",
                                         fontSize: "15px",
+                                        minHeight: "48px",
                                     }}
+
                                 >
 
                                     {
@@ -1269,31 +1270,19 @@ export const ProtocolForm = ({
                                                                             preset.id
                                                                         )
                                                                     }
+
                                                                     style={{
-                                                                        width:
-                                                                            "100%",
-
-                                                                        padding:
-                                                                            "12px",
-
-                                                                        borderRadius:
-                                                                            "10px",
-
-                                                                        border:
-                                                                            "1px solid #374151",
-
-                                                                        background:
-                                                                            "#1f2937",
-
-                                                                        color:
-                                                                            "#ffffff",
-
-                                                                        textAlign:
-                                                                            "left",
-
-                                                                        cursor:
-                                                                            "pointer",
+                                                                        width: "100%",
+                                                                        padding: "14px",
+                                                                        borderRadius: "12px",
+                                                                        border: "1px solid #475569",
+                                                                        background: "#1e293b",
+                                                                        color: "#f1f5f9",
+                                                                        textAlign: "left",
+                                                                        cursor: "pointer",
+                                                                        transition: "background 0.2s, border-color 0.2s",
                                                                     }}
+
                                                                 >
 
                                                                     <div
