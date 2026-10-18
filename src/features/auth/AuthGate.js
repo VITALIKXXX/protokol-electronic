@@ -21,6 +21,8 @@ import {
     LogoutButton,
 } from "./AuthGate.styles.js";
 
+import { SplashScreen } from "./SplashScreen.js"
+
 
 // =====================================================
 // LOKALNY CACHE UŻYTKOWNIKA
@@ -83,8 +85,18 @@ export const AuthGate = ({ children }) => {
     const [loading, setLoading] =
         useState(true);
 
-    const [error, setError] =
-        useState("");
+
+    const [showSplash, setShowSplash] = useState(true);
+
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setShowSplash(false);
+        }, 2000);
+
+        return () => clearTimeout(timeoutId);
+    }, []);
 
 
     useEffect(() => {
@@ -264,13 +276,11 @@ export const AuthGate = ({ children }) => {
     // ŁADOWANIE
     // =====================================================
 
-    if (loading) {
-        return (
-            <AuthLoading>
-                Ładowanie aplikacji...
-            </AuthLoading>
-        );
+
+    if (loading || showSplash) {
+        return <SplashScreen />;
     }
+
 
 
     // =====================================================
