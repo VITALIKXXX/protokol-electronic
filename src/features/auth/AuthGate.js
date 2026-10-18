@@ -316,25 +316,23 @@ export const AuthGate = ({ children }) => {
     return (
         <>
             <UserBar>
+
                 <UserInfo>
-                    Zalogowany:{" "}
-
-                    <strong>
-                        {userData?.displayName ||
-                            user.email}
-                    </strong>
-
-
-                    <span>
-                        Rola:{" "}
-
+                    <div className="user-badge">
+                        👤 Zalogowany:
                         <strong>
-                            {role === "admin"
-                                ? "ADMIN"
-                                : "WORKER"}
+                            {userData?.displayName || user.email}
+                        </strong>
+                    </div>
+
+                    <span className="role-badge">
+                        🛡️ Rola:
+                        <strong>
+                            {role === "admin" ? "ADMIN" : "WORKER"}
                         </strong>
                     </span>
                 </UserInfo>
+
 
 
                 <LogoutButton
