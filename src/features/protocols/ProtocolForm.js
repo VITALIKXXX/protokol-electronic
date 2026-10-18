@@ -914,39 +914,14 @@ export const ProtocolForm = ({
 
     return (
         <Card>
+
             <Section>
                 <SectionTitle>Dane zlecenia</SectionTitle>
 
                 <Grid>
                     <Field>
-                        <Label>Numer protokołu</Label>
-                        <Input
-                            value={formData.protocolNumber}
-                            onChange={updateField("protocolNumber")}
-                            placeholder="np. 001/2026"
-                        />
-                    </Field>
-
-                    <Field>
-                        <Label>📅 Data przyjęcia zlecenia</Label>
-                        <Input
-                            type="date"
-                            value={formData.orderDate}
-                            onChange={updateField("orderDate")}
-                        />
-                    </Field>
-
-                    <Field>
-                        <Label>🕒 Godzina przyjęcia</Label>
-                        <Input
-                            type="time"
-                            value={formData.orderTime}
-                            onChange={updateField("orderTime")}
-                        />
-                    </Field>
-
-                    <Field>
                         <Label>Osoba zlecająca</Label>
+
                         <Input
                             value={formData.orderingPerson}
                             onChange={updateField("orderingPerson")}
@@ -955,6 +930,7 @@ export const ProtocolForm = ({
                     </Field>
                 </Grid>
             </Section>
+
 
             <Section>
                 <SectionTitle>Rodzaj zabiegu</SectionTitle>
