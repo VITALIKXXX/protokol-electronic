@@ -1,13 +1,26 @@
 import styled from "styled-components";
 
+
 export const AuthLoading = styled.div`
-    min-height: 100vh;
-    display: grid;
-    place-items: center;
-    padding: 20px;
-    background: #07111f;
-    color: #ffffff;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+
+  display: grid;
+  place-items: center;
+
+  margin: 0;
+  padding: 20px;
+
+  background: #ffffff;
+  color: #111111;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
 `;
+
 
 export const UserBar = styled.div`
     display: flex;

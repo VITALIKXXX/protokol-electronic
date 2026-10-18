@@ -1,4 +1,23 @@
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
+
+export const GlobalStyle = createGlobalStyle`
+  html,
+  body,
+  #root {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    width: 100%;
+  }
+
+  body {
+    background: #101b2a;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+`;
 
 export const AppShell = styled.div`
   min-height: 100vh;

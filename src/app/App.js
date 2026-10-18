@@ -10,6 +10,7 @@ import {
 } from "../features/protocols/protocolsApi";
 
 import {
+  GlobalStyle,
   AppShell,
   Header,
   Title,
@@ -188,6 +189,8 @@ const App = ({
   return (
     <>
       <AppUpdateBanner />
+
+      <GlobalStyle />
 
       <AppShell>
         <Header>
