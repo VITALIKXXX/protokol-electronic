@@ -47,21 +47,43 @@ export const Buttons = styled.div`
   }
 `;
 
+
 export const Button = styled.button`
   flex: 1 1 auto;
   min-height: 46px;
   padding: 12px 16px;
-  border: 1px solid #2dd4bf;
+
+  background: linear-gradient(
+    135deg,
+    #438f9c,
+    #316c83
+  );
+
+  border: 1px solid rgba(125, 195, 210, 0.35);
   border-radius: 12px;
-  background: #2dd4bf;
-  color: #10212b;
+
+  color: #ffffff;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease;
+
+  box-shadow:
+    0 4px 14px rgba(30, 110, 135, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
 
   &:hover:not(:disabled) {
-    background: #5eead4;
+    background: linear-gradient(
+      135deg,
+      #53a4b0,
+      #397f98
+    );
+
+    box-shadow: 0 6px 18px rgba(30, 110, 135, 0.25);
   }
 
   &:active:not(:disabled) {
@@ -69,7 +91,7 @@ export const Button = styled.button`
   }
 
   &:focus-visible {
-    outline: 3px solid #99f6e4;
+    outline: 3px solid #85c3d4;
     outline-offset: 3px;
   }
 
@@ -83,15 +105,24 @@ export const Button = styled.button`
   }
 `;
 
+
+
 export const FullscreenOverlay = styled.div`
   position: fixed;
   inset: 0;
   z-index: 9999;
+
+  width: 100%;
+  height: 100dvh;
+
   background: #101b2a;
   padding: 12px;
-  display: flex;
   box-sizing: border-box;
+
+  display: flex;
+  overflow: hidden;
 `;
+
 
 export const FullscreenPanel = styled.div`
   width: 100%;
@@ -142,16 +173,25 @@ export const FullscreenCanvasBox = styled.div`
   }
 `;
 
+
 export const SavedSignature = styled.div`
   margin-top: 16px;
-  padding: 14px;
-  background: rgba(45, 212, 191, 0.08);
-  border: 1px solid rgba(45, 212, 191, 0.5);
+  padding: 16px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(37, 73, 92, 0.65),
+    rgba(20, 45, 65, 0.85)
+  );
+
+  border: 1px solid rgba(116, 183, 207, 0.45);
   border-radius: 14px;
+
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
   p {
     margin: 0 0 12px;
-    color: #5eead4;
+    color: #a8d8e8;
     font-size: 15px;
     font-weight: 700;
   }
@@ -162,8 +202,10 @@ export const SavedSignature = styled.div`
     max-width: 420px;
     height: 110px;
     object-fit: contain;
+
     background: #ffffff;
-    border: 1px solid #cbd5e1;
+    border: 1px solid #a8c6d6;
     border-radius: 10px;
   }
 `;
+

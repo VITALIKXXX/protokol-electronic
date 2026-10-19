@@ -24,7 +24,6 @@ import {
     FormActions,
     PrimaryButton,
     SecondaryButton,
-    Divider,
     ProductList,
     ProductCard,
     ProductTop,
@@ -36,6 +35,8 @@ import {
     EditButton,
     DeleteButton,
     EmptyMessage,
+    SavedProductsSection,
+    SavedProductsTitle,
 } from "./ProductPresetsManager.styles";
 
 
@@ -251,19 +252,19 @@ export const ProductPresetsManager =
 
 
         return (
-            <ManagerCard>
+            <>
+                <ManagerCard>
+                    <ManagerHeader>
+                        <ManagerTitle>
+                            🧪 Baza preparatów
+                        </ManagerTitle>
 
-                <ManagerHeader>
-                    <ManagerTitle>
-                        🧪 Baza preparatów
-                    </ManagerTitle>
-
-                    <ManagerSubtitle>
-                        Dodawaj i aktualizuj preparaty,
-                        serie oraz daty ważności.
-                    </ManagerSubtitle>
-                </ManagerHeader>
-
+                        <ManagerSubtitle>
+                            Dodawaj i aktualizuj preparaty,
+                            serie oraz daty ważności.
+                        </ManagerSubtitle>
+                    </ManagerHeader>
+                </ManagerCard>
 
                 <Form
                     onSubmit={
@@ -412,138 +413,141 @@ export const ProductPresetsManager =
 
                 </Form>
 
+                <SavedProductsSection>
+                    <SavedProductsTitle>
+                        📋 Zapisane preparaty
+                    </SavedProductsTitle>
 
-                <Divider />
+                    {
+                        products.length === 0
+                            ? (
+                                <EmptyMessage>
+                                    Brak preparatów w bazie.
+                                </EmptyMessage>
+                            )
+                            : (
 
+                                <ProductList>
 
-                {
-                    products.length === 0
-                        ? (
-                            <EmptyMessage>
-                                Brak preparatów w bazie.
-                            </EmptyMessage>
-                        )
-                        : (
+                                    {
+                                        products.map(
+                                            (product) => (
 
-                            <ProductList>
+                                                <ProductCard
+                                                    key={
+                                                        product.id
+                                                    }
+                                                >
 
-                                {
-                                    products.map(
-                                        (product) => (
+                                                    <ProductTop>
 
-                                            <ProductCard
-                                                key={
-                                                    product.id
-                                                }
-                                            >
+                                                        <div>
 
-                                                <ProductTop>
-
-                                                    <div>
-
-                                                        <ProductName>
-                                                            {
-                                                                product.name
-                                                            }
-                                                        </ProductName>
-
-
-                                                        <ProductDetails>
-
-                                                            <DetailRow>
-
-                                                                <DetailLabel>
-                                                                    Seria:
-                                                                </DetailLabel>
-
-                                                                <span>
-                                                                    {
-                                                                        product.batch ||
-                                                                        "-"
-                                                                    }
-                                                                </span>
-
-                                                            </DetailRow>
+                                                            <ProductName>
+                                                                {
+                                                                    product.name
+                                                                }
+                                                            </ProductName>
 
 
-                                                            <DetailRow>
+                                                            <ProductDetails>
 
-                                                                <DetailLabel>
-                                                                    Ważność:
-                                                                </DetailLabel>
+                                                                <DetailRow>
 
-                                                                <span>
-                                                                    {
-                                                                        product.expiryDate ||
-                                                                        "-"
-                                                                    }
-                                                                </span>
+                                                                    <DetailLabel>
+                                                                        Seria:
+                                                                    </DetailLabel>
 
-                                                            </DetailRow>
+                                                                    <span>
+                                                                        {
+                                                                            product.batch ||
+                                                                            "-"
+                                                                        }
+                                                                    </span>
 
-
-                                                            <DetailRow>
-
-                                                                <DetailLabel>
-                                                                    Metoda:
-                                                                </DetailLabel>
-
-                                                                <span>
-                                                                    {
-                                                                        product.dosage ||
-                                                                        "-"
-                                                                    }
-                                                                </span>
-
-                                                            </DetailRow>
-
-                                                        </ProductDetails>
-
-                                                    </div>
+                                                                </DetailRow>
 
 
-                                                    <ProductActions>
+                                                                <DetailRow>
 
-                                                        <EditButton
-                                                            type="button"
-                                                            onClick={() =>
-                                                                handleEdit(
-                                                                    product
-                                                                )
-                                                            }
-                                                        >
-                                                            ✏️ Edytuj
-                                                        </EditButton>
+                                                                    <DetailLabel>
+                                                                        Ważność:
+                                                                    </DetailLabel>
+
+                                                                    <span>
+                                                                        {
+                                                                            product.expiryDate ||
+                                                                            "-"
+                                                                        }
+                                                                    </span>
+
+                                                                </DetailRow>
 
 
-                                                        {isAdmin && (
-                                                            <DeleteButton
+                                                                <DetailRow>
+
+                                                                    <DetailLabel>
+                                                                        Metoda:
+                                                                    </DetailLabel>
+
+                                                                    <span>
+                                                                        {
+                                                                            product.dosage ||
+                                                                            "-"
+                                                                        }
+                                                                    </span>
+
+                                                                </DetailRow>
+
+                                                            </ProductDetails>
+
+                                                        </div>
+
+
+                                                        <ProductActions>
+
+                                                            <EditButton
                                                                 type="button"
                                                                 onClick={() =>
-                                                                    handleDelete(
+                                                                    handleEdit(
                                                                         product
                                                                     )
                                                                 }
                                                             >
-                                                                🗑 Usuń
-                                                            </DeleteButton>
-                                                        )}
+                                                                ✏️ Edytuj
+                                                            </EditButton>
 
-                                                    </ProductActions>
 
-                                                </ProductTop>
+                                                            {isAdmin && (
+                                                                <DeleteButton
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        handleDelete(
+                                                                            product
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    🗑 Usuń
+                                                                </DeleteButton>
+                                                            )}
 
-                                            </ProductCard>
+                                                        </ProductActions>
 
+                                                    </ProductTop>
+
+                                                </ProductCard>
+
+                                            )
                                         )
-                                    )
-                                }
+                                    }
 
-                            </ProductList>
+                                </ProductList>
 
-                        )
-                }
+                            )
+                    }
 
-            </ManagerCard>
+                </SavedProductsSection>
+
+            </>
         );
     };

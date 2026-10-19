@@ -19,10 +19,50 @@ export const GlobalStyle = createGlobalStyle`
   }
 `;
 
+
 export const AppShell = styled.div`
   min-height: 100vh;
   box-sizing: border-box;
-  background: #101b2a;
+
+  background-color: #080f1e;
+
+  
+  background-image:
+    radial-gradient(
+      circle 190px at 5% 12%,
+      rgba(0, 184, 204, 0.28) 0%,
+      rgba(0, 102, 150, 0.14) 55%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle 260px at 95% 28%,
+      rgba(0, 142, 170, 0.30) 0%,
+      rgba(0, 90, 130, 0.13) 65%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle 170px at 8% 68%,
+      rgba(20, 115, 195, 0.24) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle 230px at 90% 90%,
+      rgba(0, 170, 150, 0.20) 0%,
+      transparent 100%
+    ),
+    linear-gradient(
+      160deg,
+      #101c32 0%,
+      #080f1e 55%,
+      #111d31 100%
+    );
+
+
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  
+
   color: #f1f5f9;
 
   font-family: Arial, Helvetica, sans-serif;
@@ -33,8 +73,10 @@ export const AppShell = styled.div`
 
   @media (max-width: 600px) {
     padding: 16px 12px;
+    background-attachment: scroll;
   }
 `;
+
 
 export const Header = styled.header`
   max-width: 980px;
@@ -112,24 +154,43 @@ export const Tabs = styled.div`
   flex-wrap: wrap;
 `;
 
+
+
 export const TabButton = styled.button`
-  border: 1px solid ${({ $active }) => ($active ? "#2dd4bf" : "#475569")};
-  background: ${({ $active }) => ($active ? "#2dd4bf" : "#1e293b")};
-  color: ${({ $active }) => ($active ? "#10212b" : "#e2e8f0")};
+  border: 1px solid
+    ${({ $active }) =>
+    $active ? "#74b7cf" : "rgba(116, 166, 190, 0.25)"};
+
+  background: ${({ $active }) =>
+    $active
+      ? "linear-gradient(135deg, #438f9c, #316c83)"
+      : "linear-gradient(135deg, #27394d, #203044)"};
+
+  color: ${({ $active }) =>
+    $active ? "#ffffff" : "#cbd5e1"};
+
   padding: 12px 18px;
   border-radius: 12px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+
+  box-shadow: ${({ $active }) =>
+    $active
+      ? "0 4px 16px rgba(30, 110, 135, 0.20)"
+      : "none"};
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
 
   &:hover {
-    background: ${({ $active }) => ($active ? "#5eead4" : "#334155")};
-    border-color: #2dd4bf;
+    border-color: #74b7cf;
   }
 
   &:focus-visible {
-    outline: 3px solid #5eead4;
+    outline: 3px solid #85c3d4;
     outline-offset: 3px;
   }
 
