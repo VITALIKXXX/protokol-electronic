@@ -61,8 +61,10 @@ export const SplashLogo = styled.div`
     animation: ${logoAppear} 2s ease forwards;
 
     img {
-        width: 96px;
-        height: 96px;
+        display: block;
+        width: 300px;
+        max-width: 85vw;
+        height: auto;
         object-fit: contain;
     }
 `;

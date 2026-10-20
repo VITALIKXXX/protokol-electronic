@@ -93,7 +93,7 @@ export const AuthGate = ({ children }) => {
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             setShowSplash(false);
-        }, 2000);
+        }, 3000);
 
         return () => clearTimeout(timeoutId);
     }, []);

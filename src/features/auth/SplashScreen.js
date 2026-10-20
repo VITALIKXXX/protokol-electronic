@@ -17,7 +17,7 @@ export const SplashScreen = () => {
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             setProgress(100);
-        }, 50);
+        }, 100);
 
         return () => clearTimeout(timeoutId);
     }, []);
@@ -26,8 +26,8 @@ export const SplashScreen = () => {
         <SplashContainer>
             <SplashLogo>
                 <img
-                    src="/icon-192.png"
-                    alt="Logo Protokołu"
+                    src="avi-vet-login.png"
+                    alt="Avi-Vet SERVICE"
                 />
             </SplashLogo>
 
