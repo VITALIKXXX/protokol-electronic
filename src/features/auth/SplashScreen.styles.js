@@ -44,7 +44,9 @@ export const SplashContainer = styled.div`
     min-height: 100vh;
     min-height: 100dvh;
     width: 100%;
+    box-sizing: border-box;
     background: #ffffff;
+    
 
     display: flex;
     flex-direction: column;
