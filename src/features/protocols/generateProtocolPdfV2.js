@@ -26,8 +26,22 @@ const hasTreatment = (protocol, name) =>
 
 const yesNo = (value) => (value ? "TAK" : "NIE");
 
-export const generateProtocolPdfV2 = (protocol) => {
+export const generateProtocolPdfV2 = async (protocol) => {
     const pdf = new jsPDF("p", "mm", "a4");
+
+    const logoUrl = "/images/avi-vet-logo-bw.png";
+
+    const logoResponse = await fetch(logoUrl);
+    const logoBlob = await logoResponse.blob();
+
+    const logoData = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+
+        reader.readAsDataURL(logoBlob);
+    });
 
     const pageWidth = 210;
     const margin = 10;
@@ -72,17 +86,34 @@ export const generateProtocolPdfV2 = (protocol) => {
         );
     };
 
-    // NAGŁÓWEK
-    cell(
-        10,
-        y,
-        50,
-        16,
-        "Avi-Vet\nSERVICE",
-        {
-            bold: true,
-            fontSize: 14,
-        }
+    // NAGŁÓWEK — lewa komórka z logo
+    pdf.rect(10, y, 50, 16);
+
+    const logoInfo = pdf.getImageProperties(logoData);
+
+    const maxWidth = 46;
+    const maxHeight = 14;
+
+    const scale = Math.min(
+        maxWidth / logoInfo.width,
+        maxHeight / logoInfo.height
+    );
+
+    const logoWidth = logoInfo.width * scale;
+    const logoHeight = logoInfo.height * scale;
+
+    const logoX = 10 + (50 - logoWidth) / 2;
+    const logoY = y + (16 - logoHeight) / 2;
+
+    pdf.addImage(
+        logoData,
+        "PNG",
+        logoX,
+        logoY,
+        logoWidth,
+        logoHeight,
+        undefined,
+        "FAST"
     );
 
     cell(
