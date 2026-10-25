@@ -37,6 +37,7 @@ import {
     EmptyMessage,
     SavedProductsSection,
     SavedProductsTitle,
+    SearchInput,
 } from "./ProductPresetsManager.styles";
 
 
@@ -52,6 +53,7 @@ export const ProductPresetsManager =
     ({ role }) => {
 
         const isAdmin = role === "admin";
+        const [searchTerm, setSearchTerm] = useState("");
 
         const [
             products,
@@ -94,6 +96,15 @@ export const ProductPresetsManager =
                         event.target.value,
                 }));
             };
+
+        const filteredProducts = products.filter((product) => {
+            const search = searchTerm.toLowerCase().trim();
+
+            const name = (product.name || "").toLowerCase();
+            const batch = (product.batch || "").toLowerCase();
+
+            return name.includes(search) || batch.includes(search);
+        });
 
 
         const resetForm = () => {
@@ -418,6 +429,13 @@ export const ProductPresetsManager =
                         📋 Zapisane preparaty
                     </SavedProductsTitle>
 
+                    <SearchInput
+                        type="text"
+                        placeholder="🔍 Szukaj preparatu lub numeru serii..."
+                        value={searchTerm}
+                        onChange={(event) => setSearchTerm(event.target.value)}
+                    />
+
                     {
                         products.length === 0
                             ? (
@@ -430,7 +448,7 @@ export const ProductPresetsManager =
                                 <ProductList>
 
                                     {
-                                        products.map(
+                                        filteredProducts.map(
                                             (product) => (
 
                                                 <ProductCard

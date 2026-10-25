@@ -524,3 +524,37 @@ export const SavedProductsTitle = styled.h2`
     padding-bottom: 12px;
   }
 `;
+
+export const SearchInput = styled(Input)`
+  margin-bottom: 24px;
+
+  min-height: 54px;
+  padding: 14px 18px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(36, 58, 78, 0.95),
+    rgba(16, 32, 49, 0.98)
+  );
+
+  border: 1px solid rgba(96, 158, 181, 0.45);
+  border-radius: 14px;
+
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  &:focus {
+    border-color: #74b7cf;
+
+    box-shadow:
+      0 0 0 3px rgba(116, 183, 207, 0.15),
+      0 6px 22px rgba(30, 110, 135, 0.18);
+  }
+
+  @media (max-width: 600px) {
+    min-height: 50px;
+    margin-bottom: 18px;
+    padding: 12px 14px;
+  }
+`;

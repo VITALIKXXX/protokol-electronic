@@ -2,32 +2,45 @@
 import styled from "styled-components";
 
 export const Card = styled.div`
-  padding: 14px 18px;
-  margin-bottom: 10px;
+  background: linear-gradient(
+    145deg,
+    rgba(36, 58, 78, 0.85),
+    rgba(20, 37, 55, 0.92)
+  );
 
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 14px;
+  border: 1px solid rgba(116, 166, 190, 0.28);
+  border-left: 3px solid #609eb5;
+  border-radius: 16px;
+
+  padding: 20px;
+  margin-bottom: 0;
+
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 
   transition:
     border-color 0.2s ease,
-    background 0.2s ease;
+    box-shadow 0.2s ease;
 
   &:hover {
-    background: #243449;
-    border-color: #2dd4bf;
+    border-color: #74b7cf;
+
+    box-shadow:
+      0 8px 24px rgba(0, 0, 0, 0.18),
+      0 0 0 1px rgba(116, 183, 207, 0.10);
   }
 
   @media (max-width: 600px) {
-    padding: 12px 14px;
-    margin-bottom: 8px;
+    padding: 16px;
+    border-radius: 14px;
   }
 `;
 
 export const Number = styled.h3`
-  margin: 0 0 6px;
-  color: #5eead4;
-  font-size: 17px;
+  margin: 0 0 14px;
+  color: #f1f5f9;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1.3;
 `;
