@@ -10,12 +10,34 @@ export const AppUpdateBanner = () => {
     const [isUpdating, setIsUpdating] = useState(false);
 
     useEffect(() => {
+        // Odbieramy informację o nowej wersji.
         const handleUpdate = (event) => {
             setRegistration(event.detail);
         };
 
+        // Nasłuchujemy nowych aktualizacji.
         window.addEventListener("sw-update", handleUpdate);
 
+        // Sprawdzamy, czy aktualizacja już czeka.
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.getRegistration()
+                .then((existingRegistration) => {
+                    if (
+                        existingRegistration?.waiting &&
+                        navigator.serviceWorker.controller
+                    ) {
+                        setRegistration(existingRegistration);
+                    }
+                })
+                .catch((error) => {
+                    console.warn(
+                        "Nie udało się sprawdzić aktualizacji:",
+                        error
+                    );
+                });
+        }
+
+        // Usuwamy nasłuchiwanie po zamknięciu komponentu.
         return () => {
             window.removeEventListener("sw-update", handleUpdate);
         };
