@@ -18,13 +18,13 @@ export const NetworkStatus = () => {
     }, []);
 
     return (
-        <Wrapper>
-            <Dot online={online} />
+        <Wrapper $online={online}>
+            <Dot $online={online} />
 
             <Tooltip>
                 {online
-                    ? "🟢 Online — dane synchronizują się z Firebase."
-                    : "🔴 Offline — protokoły zapiszą się lokalnie i zostaną wysłane po odzyskaniu połączenia."}
+                    ? "Online — połączono"
+                    : "Offline — brak połączenia"}
             </Tooltip>
         </Wrapper>
     );

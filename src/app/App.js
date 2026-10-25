@@ -195,11 +195,11 @@ const App = ({
       <AppShell>
         <Header>
           <Title>
-            Protokół elektroniczny
+            Protokoły elektroniczne
           </Title>
 
           <Subtitle>
-            Formularz wykonania usługi
+            System dokumentacji usług weterynaryjnych
           </Subtitle>
 
           <NetworkStatus />
