@@ -672,14 +672,57 @@ export const generateProtocolPdfV2 = async (protocol) => {
         protocol.protocolNumber || Date.now()
     ).replaceAll("/", "-");
 
+    const creatorName = String(
+        protocol.createdBy?.name || "Nieznany"
+    )
+        .trim()
+        .split(/\s+/)[0];
+
+    const safeCreatorName = removePolishChars(creatorName)
+        .replace(/[^a-zA-Z0-9_-]/g, "");
+
+    const fileName = `${safeCreatorName}_${safeProtocolNumber}.pdf`;
+
+
     if (isMobile) {
-        pdf.save(
-            `protokol-${safeProtocolNumber}.pdf`
-        );
+        pdf.save(fileName);
     } else {
-        window.open(
-            pdf.output("bloburl"),
-            "_blank"
-        );
+        const pdfUrl = pdf.output("bloburl");
+
+        const previewWindow = window.open("", "_blank");
+
+        if (previewWindow) {
+            previewWindow.document.title = fileName;
+
+            const downloadLink = previewWindow.document.createElement("a");
+            downloadLink.href = pdfUrl;
+            downloadLink.download = fileName;
+            downloadLink.textContent = `⬇ Pobierz ${fileName}`;
+
+            downloadLink.style.cssText = `
+                display: block;
+                width: fit-content;
+                margin: 15px 15px 15px auto;
+                padding: 12px 24px;
+                background: #087f8c;
+                color: white;
+                font: bold 15px Arial, sans-serif;
+                text-decoration: none;
+                border-radius: 10px;
+                cursor: pointer;
+                box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+`;
+
+            previewWindow.document.body.appendChild(downloadLink);
+
+            const iframe = previewWindow.document.createElement("iframe");
+            iframe.src = pdfUrl;
+            iframe.style.cssText =
+                "width:100%;height:90vh;border:none;";
+
+            previewWindow.document.body.appendChild(iframe);
+        } else {
+            pdf.save(fileName);
+        }
     }
 };
