@@ -207,89 +207,80 @@ const App = ({
 
 
         <Main>
-          <Tabs>
 
+          <Tabs>
             <TabButton
               type="button"
-              $active={
-                activeView === "protocols"
-              }
-              onClick={() =>
-                setActiveView("protocols")
-              }
+              $active={activeView === "protocols"}
+              onClick={() => setActiveView("protocols")}
             >
-              📋 Protokoły
+              📋 Nowy protokół
             </TabButton>
 
-
             <TabButton
               type="button"
-              $active={
-                activeView === "products"
-              }
-              onClick={() =>
-                setActiveView("products")
-              }
+              $active={activeView === "products"}
+              onClick={() => setActiveView("products")}
             >
               🧪 Baza preparatów
             </TabButton>
 
+            <TabButton
+              type="button"
+              $active={activeView === "list"}
+              onClick={() => setActiveView("list")}
+            >
+              📂 Wystawione protokoły
+            </TabButton>
           </Tabs>
+
           {activeView === "protocols" && (
+            <ProtocolForm
+              editingProtocol={editingProtocol}
+              onFinishEdit={() => {
+                setEditingProtocol(null);
+                setActiveView("list");
+              }}
+              currentUser={currentUser}
+              currentUserData={currentUserData}
+            />
+          )}
+
+          {activeView === "products" && (
+            <ProductPresetsManager role={role} />
+          )}
+
+          {activeView === "list" && (
             <>
-              <ProtocolForm
-                editingProtocol={
-                  editingProtocol
-                }
-                onFinishEdit={() =>
-                  setEditingProtocol(null)
-                }
-                currentUser={
-                  currentUser
-                }
-                currentUserData={
-                  currentUserData
-                }
-              />
-
-
               <SearchWrapper>
-                <SearchIcon>
-                  🔍
-                </SearchIcon>
+                <SearchIcon>🔍</SearchIcon>
 
                 <SearchInput
                   placeholder="Szukaj protokołu..."
                   value={search}
                   onChange={(event) =>
-                    setSearch(
-                      event.target.value
-                    )
+                    setSearch(event.target.value)
                   }
                 />
               </SearchWrapper>
 
-
               <ProtocolList
-                protocols={
-                  filteredProtocols
-                }
-                onEdit={
-                  setEditingProtocol
-                }
-                onDelete={
-                  handleDeleteProtocol
-                }
+                protocols={filteredProtocols}
+                onEdit={(protocol) => {
+                  setEditingProtocol(protocol);
+                  setActiveView("protocols");
+                  window.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                  });
+                }}
+                onDelete={handleDeleteProtocol}
                 role={role}
               />
             </>
           )}
-          {activeView === "products" && (
-            <ProductPresetsManager
-              role={role}
-            />
-          )}
         </Main>
+
       </AppShell>
     </>
   );
